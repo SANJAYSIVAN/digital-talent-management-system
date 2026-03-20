@@ -36,13 +36,14 @@ digital-talent-management-system/
 
 ## Backend Setup
 
-Open a terminal in [server](C:\Users\mksan\OneDrive\Documents\New project\digital-talent-management-system\server) and install dependencies if needed:
+Go to the `server` folder and install dependencies:
 
 ```powershell
+cd server
 npm.cmd install
 ```
 
-Update [server/.env](C:\Users\mksan\OneDrive\Documents\New project\digital-talent-management-system\server\.env):
+Create a `.env` file inside the `server` folder and add:
 
 ```env
 PORT=5000
@@ -65,16 +66,17 @@ MongoDB connected
 
 ## Frontend Setup
 
-Open a second terminal in [client](C:\Users\mksan\OneDrive\Documents\New project\digital-talent-management-system\client):
+Open a second terminal and go to the `client` folder:
 
 ```powershell
+cd client
 npm.cmd install
 npm.cmd run dev
 ```
 
 Optional frontend environment file:
 
-Create `client/.env.local` from [client/.env.local.example](C:\Users\mksan\OneDrive\Documents\New project\digital-talent-management-system\client\.env.local.example) if you want to change the backend URL.
+Create `client/.env.local` from `client/.env.local.example` if you want to change the backend URL.
 
 Open the app at:
 
