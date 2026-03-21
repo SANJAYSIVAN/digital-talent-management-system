@@ -2,7 +2,7 @@
 
 Full stack internship project.
 
-## Sprint 1 Scope
+##  Scope
 
 - Setup frontend and backend architecture
 - Implement user registration and login
@@ -123,7 +123,7 @@ Header:
 Authorization: Bearer YOUR_TOKEN_HERE
 ```
 
-## Sprint 1 Testing Checklist
+## Testing Checklist
 
 - Register a new user
 - Login with the same user
