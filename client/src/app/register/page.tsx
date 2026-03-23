@@ -1,9 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import AuthShell from "@/components/AuthShell";
-import { getStoredToken } from "@/lib/auth";
 import { API_BASE_URL } from "@/lib/config";
 
 export default function RegisterPage() {
@@ -16,12 +15,6 @@ export default function RegisterPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (getStoredToken()) {
-      router.replace("/dashboard");
-    }
-  }, [router]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
