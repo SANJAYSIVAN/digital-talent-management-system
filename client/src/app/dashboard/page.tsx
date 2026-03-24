@@ -20,7 +20,13 @@ type Task = {
   createdAt: string;
 };
 
-const initialTaskForm = {
+type TaskForm = {
+  title: string;
+  description: string;
+  dueDate: string;
+};
+
+const initialTaskForm: TaskForm = {
   title: "",
   description: "",
   dueDate: "",
@@ -46,15 +52,26 @@ const formatTaskDate = (value: string | null) => {
   return date.toLocaleDateString();
 };
 
+const toInputDateValue = (value: string | null) => {
+  if (!value) {
+    return "";
+  }
+
+  return new Date(value).toISOString().split("T")[0];
+};
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<StoredUser | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [formData, setFormData] = useState(initialTaskForm);
+  const [formData, setFormData] = useState<TaskForm>(initialTaskForm);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingForm, setEditingForm] = useState<TaskForm>(initialTaskForm);
   const [error, setError] = useState("");
   const [taskError, setTaskError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
   useEffect(() => {
     const token = getStoredToken();
@@ -119,6 +136,17 @@ export default function DashboardPage() {
     router.push("/login");
   };
 
+  const getAuthToken = () => {
+    const token = getStoredToken();
+
+    if (!token) {
+      router.replace("/login");
+      return null;
+    }
+
+    return token;
+  };
+
   const handleCreateTask = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setTaskError("");
@@ -128,10 +156,9 @@ export default function DashboardPage() {
       return;
     }
 
-    const token = getStoredToken();
+    const token = getAuthToken();
 
     if (!token) {
-      router.replace("/login");
       return;
     }
 
@@ -165,6 +192,167 @@ export default function DashboardPage() {
       setTaskError(errorMessage);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const startEditingTask = (task: Task) => {
+    setEditingTaskId(task._id);
+    setEditingForm({
+      title: task.title,
+      description: task.description,
+      dueDate: toInputDateValue(task.dueDate),
+    });
+    setTaskError("");
+  };
+
+  const cancelEditingTask = () => {
+    setEditingTaskId(null);
+    setEditingForm(initialTaskForm);
+    setTaskError("");
+  };
+
+  const handleUpdateTask = async (taskId: string) => {
+    setTaskError("");
+
+    if (!editingForm.title.trim() || !editingForm.description.trim()) {
+      setTaskError("Title and description are required.");
+      return;
+    }
+
+    const token = getAuthToken();
+
+    if (!token) {
+      return;
+    }
+
+    setActiveTaskId(taskId);
+
+    try {
+      const currentTask = tasks.find((task) => task._id === taskId);
+
+      if (!currentTask) {
+        throw new Error("Task not found.");
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: editingForm.title.trim(),
+          description: editingForm.description.trim(),
+          dueDate: editingForm.dueDate || null,
+          status: currentTask.status,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not update task.");
+      }
+
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task._id === taskId ? data : task))
+      );
+      cancelEditingTask();
+    } catch (updateError) {
+      const errorMessage =
+        updateError instanceof Error ? updateError.message : "Could not update task.";
+      setTaskError(errorMessage);
+    } finally {
+      setActiveTaskId(null);
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    setTaskError("");
+
+    const token = getAuthToken();
+
+    if (!token) {
+      return;
+    }
+
+    setActiveTaskId(taskId);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not delete task.");
+      }
+
+      setTasks((currentTasks) => currentTasks.filter((task) => task._id !== taskId));
+
+      if (editingTaskId === taskId) {
+        cancelEditingTask();
+      }
+    } catch (deleteError) {
+      const errorMessage =
+        deleteError instanceof Error ? deleteError.message : "Could not delete task.";
+      setTaskError(errorMessage);
+    } finally {
+      setActiveTaskId(null);
+    }
+  };
+
+  const handleStatusChange = async (taskId: string, status: Task["status"]) => {
+    setTaskError("");
+
+    const token = getAuthToken();
+
+    if (!token) {
+      return;
+    }
+
+    setActiveTaskId(taskId);
+
+    try {
+      const currentTask = tasks.find((task) => task._id === taskId);
+
+      if (!currentTask) {
+        throw new Error("Task not found.");
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          title: currentTask.title,
+          description: currentTask.description,
+          dueDate: currentTask.dueDate,
+          status,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not update status.");
+      }
+
+      setTasks((currentTasks) =>
+        currentTasks.map((task) => (task._id === taskId ? data : task))
+      );
+    } catch (statusError) {
+      const errorMessage =
+        statusError instanceof Error ? statusError.message : "Could not update status.";
+      setTaskError(errorMessage);
+    } finally {
+      setActiveTaskId(null);
     }
   };
 
@@ -314,7 +502,7 @@ export default function DashboardPage() {
               <div>
                 <h2 className="text-2xl font-semibold text-slate-900">Task list</h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  Your recently created tasks appear here.
+                  Edit, update status, or delete tasks from here.
                 </p>
               </div>
               <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
@@ -328,35 +516,138 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="mt-6 space-y-4">
-                {tasks.map((task) => (
-                  <article
-                    key={task._id}
-                    className="rounded-[1.5rem] border border-[var(--border)] bg-white p-5"
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold text-slate-900">{task.title}</h3>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">
-                          {task.description}
-                        </p>
-                      </div>
-                      <span
-                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${statusStyles[task.status]}`}
-                      >
-                        {task.status.replace("-", " ")}
-                      </span>
-                    </div>
+                {tasks.map((task) => {
+                  const isEditing = editingTaskId === task._id;
+                  const isTaskBusy = activeTaskId === task._id;
 
-                    <div className="mt-4 flex flex-wrap gap-3 text-sm text-slate-500">
-                      <span className="rounded-full bg-stone-100 px-3 py-1">
-                        Due: {formatTaskDate(task.dueDate)}
-                      </span>
-                      <span className="rounded-full bg-stone-100 px-3 py-1">
-                        Created: {formatTaskDate(task.createdAt)}
-                      </span>
-                    </div>
-                  </article>
-                ))}
+                  return (
+                    <article
+                      key={task._id}
+                      className="rounded-[1.5rem] border border-[var(--border)] bg-white p-5"
+                    >
+                      {isEditing ? (
+                        <div className="space-y-4">
+                          <input
+                            type="text"
+                            value={editingForm.title}
+                            onChange={(event) =>
+                              setEditingForm((current) => ({
+                                ...current,
+                                title: event.target.value,
+                              }))
+                            }
+                            className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
+                            placeholder="Task title"
+                          />
+                          <textarea
+                            value={editingForm.description}
+                            onChange={(event) =>
+                              setEditingForm((current) => ({
+                                ...current,
+                                description: event.target.value,
+                              }))
+                            }
+                            className="min-h-28 w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
+                            placeholder="Task description"
+                          />
+                          <input
+                            type="date"
+                            value={editingForm.dueDate}
+                            onChange={(event) =>
+                              setEditingForm((current) => ({
+                                ...current,
+                                dueDate: event.target.value,
+                              }))
+                            }
+                            className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
+                          />
+
+                          <div className="flex flex-wrap gap-3">
+                            <button
+                              type="button"
+                              onClick={() => handleUpdateTask(task._id)}
+                              disabled={isTaskBusy}
+                              className="rounded-full bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[var(--primary-dark)] disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                              {isTaskBusy ? "Saving..." : "Save"}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={cancelEditingTask}
+                              className="rounded-full border border-[var(--border)] px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                              <h3 className="text-lg font-semibold text-slate-900">
+                                {task.title}
+                              </h3>
+                              <p className="mt-2 text-sm leading-6 text-slate-600">
+                                {task.description}
+                              </p>
+                            </div>
+                            <span
+                              className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${statusStyles[task.status]}`}
+                            >
+                              {task.status.replace("-", " ")}
+                            </span>
+                          </div>
+
+                          <div className="mt-4 flex flex-wrap gap-3 text-sm text-slate-500">
+                            <span className="rounded-full bg-stone-100 px-3 py-1">
+                              Due: {formatTaskDate(task.dueDate)}
+                            </span>
+                            <span className="rounded-full bg-stone-100 px-3 py-1">
+                              Created: {formatTaskDate(task.createdAt)}
+                            </span>
+                          </div>
+
+                          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <select
+                              value={task.status}
+                              onChange={(event) =>
+                                handleStatusChange(
+                                  task._id,
+                                  event.target.value as Task["status"]
+                                )
+                              }
+                              disabled={isTaskBusy}
+                              className="rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-70"
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="in-progress">In Progress</option>
+                              <option value="completed">Completed</option>
+                            </select>
+
+                            <div className="flex flex-wrap gap-3">
+                              <button
+                                type="button"
+                                onClick={() => startEditingTask(task)}
+                                disabled={isTaskBusy}
+                                className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-70"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteTask(task._id)}
+                                disabled={isTaskBusy}
+                                className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70"
+                              >
+                                {isTaskBusy ? "Working..." : "Delete"}
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </article>
+                  );
+                })}
               </div>
             )}
           </div>
