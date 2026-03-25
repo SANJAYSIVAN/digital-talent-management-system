@@ -72,6 +72,8 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | Task["status"]>("all");
 
   useEffect(() => {
     const token = getStoredToken();
@@ -356,6 +358,20 @@ export default function DashboardPage() {
     }
   };
 
+  const filteredTasks = tasks.filter((task) => {
+    const matchesStatus = statusFilter === "all" ? true : task.status === statusFilter;
+    const query = searchTerm.trim().toLowerCase();
+    const matchesSearch =
+      query.length === 0
+        ? true
+        : task.title.toLowerCase().includes(query) ||
+          task.description.toLowerCase().includes(query);
+
+    return matchesStatus && matchesSearch;
+  });
+
+  const recentTasks = tasks.slice(0, 3);
+
   if (isLoading) {
     return (
       <main className="flex min-h-screen items-center justify-center px-6 py-16">
@@ -424,6 +440,69 @@ export default function DashboardPage() {
             <p className="mt-3 text-3xl font-semibold text-slate-900">
               {tasks.filter((task) => task.status === "completed").length}
             </p>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold text-slate-900">Task overview</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                  Search tasks and filter them by status.
+                </p>
+              </div>
+              <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
+                {filteredTasks.length} shown
+              </span>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-[1fr_auto]">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search by title or description"
+                className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)]"
+              />
+
+              <select
+                value={statusFilter}
+                onChange={(event) =>
+                  setStatusFilter(event.target.value as "all" | Task["status"])
+                }
+                className="rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)]"
+              >
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
+            <h2 className="text-2xl font-semibold">Recent tasks</h2>
+            <p className="mt-2 text-sm leading-6 text-emerald-50/90">
+              Quick look at the latest tasks added to your workspace.
+            </p>
+
+            <div className="mt-6 space-y-3">
+              {recentTasks.length === 0 ? (
+                <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
+                  No tasks created yet.
+                </div>
+              ) : (
+                recentTasks.map((task) => (
+                  <div key={task._id} className="rounded-2xl bg-white/10 px-4 py-4">
+                    <p className="font-semibold text-white">{task.title}</p>
+                    <p className="mt-1 text-sm text-emerald-50/90">
+                      {task.status.replace("-", " ")}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
@@ -506,17 +585,17 @@ export default function DashboardPage() {
                 </p>
               </div>
               <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
-                {tasks.length} items
+                {filteredTasks.length} items
               </span>
             </div>
 
-            {tasks.length === 0 ? (
+            {filteredTasks.length === 0 ? (
               <div className="mt-6 rounded-[1.5rem] border border-dashed border-[var(--border)] bg-white px-6 py-10 text-center text-sm text-[var(--muted)]">
-                No tasks yet. Create your first task from the form.
+                No tasks match the current search or filter.
               </div>
             ) : (
               <div className="mt-6 space-y-4">
-                {tasks.map((task) => {
+                {filteredTasks.map((task) => {
                   const isEditing = editingTaskId === task._id;
                   const isTaskBusy = activeTaskId === task._id;
 
