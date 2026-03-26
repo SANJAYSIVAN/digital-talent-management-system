@@ -2,12 +2,21 @@
 
 Full stack internship project.
 
-##  Scope
+## Scope
+
+### Sprint 1
 
 - Setup frontend and backend architecture
 - Implement user registration and login
 - Connect the backend to MongoDB
 - Prepare the codebase for GitHub submission
+
+### Sprint 2
+
+- Build Task Management module
+- Implement create, edit, and delete tasks
+- Develop basic dashboard
+- Push sprint updates
 
 ## Tech Stack
 
@@ -33,6 +42,17 @@ digital-talent-management-system/
 - Frontend register page
 - Frontend login page
 - Protected dashboard page
+
+## Features Added In Sprint 2
+
+- Task model and protected task APIs
+- Create task form in dashboard
+- Task listing in dashboard
+- Edit task functionality
+- Delete task functionality
+- Task status update
+- Task search and status filtering
+- Basic dashboard overview cards
 
 ## Backend Setup
 
@@ -123,6 +143,16 @@ Header:
 Authorization: Bearer YOUR_TOKEN_HERE
 ```
 
+### Tasks
+
+`GET /api/tasks`
+
+`POST /api/tasks`
+
+`PUT /api/tasks/:id`
+
+`DELETE /api/tasks/:id`
+
 ## Testing Checklist
 
 - Register a new user
@@ -131,6 +161,11 @@ Authorization: Bearer YOUR_TOKEN_HERE
 - Open the dashboard after login
 - Refresh the dashboard and confirm the user stays authenticated
 - Logout and confirm dashboard access is removed
+- Create a task
+- Edit a task
+- Delete a task
+- Change task status
+- Use search and status filters in the dashboard
 
 ## GitHub Push Steps
 
@@ -147,6 +182,7 @@ git push -u origin main
 
 ## Next Steps
 
-- Task management module
-- Create, edit, and delete tasks
-- Basic dashboard improvements
+- Final testing and polish
+- Role-based access
+- Analytics and advanced dashboard features
+- Deployment
