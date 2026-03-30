@@ -9,14 +9,14 @@ Full stack internship project.
 - Setup frontend and backend architecture
 - Implement user registration and login
 - Connect the backend to MongoDB
-- Prepare the codebase for GitHub submission
+
 
 ### Sprint 2
 
 - Build Task Management module
 - Implement create, edit, and delete tasks
 - Develop basic dashboard
-- Push sprint updates
+
 
 ## Tech Stack
 
