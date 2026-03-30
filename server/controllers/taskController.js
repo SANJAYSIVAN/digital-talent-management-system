@@ -2,7 +2,10 @@ const Task = require("../models/Task");
 
 const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({ createdBy: req.user._id }).sort({ createdAt: -1 });
+    const query = req.user.role === "admin" ? {} : { createdBy: req.user._id };
+    const tasks = await Task.find(query)
+      .populate("createdBy", "name email role")
+      .sort({ createdAt: -1 });
     return res.status(200).json(tasks);
   } catch (error) {
     return res.status(500).json({ message: "Server error while fetching tasks." });
@@ -33,7 +36,11 @@ const createTask = async (req, res) => {
 const updateTask = async (req, res) => {
   try {
     const { title, description, dueDate, status } = req.body;
-    const task = await Task.findOne({ _id: req.params.id, createdBy: req.user._id });
+    const taskQuery =
+      req.user.role === "admin"
+        ? { _id: req.params.id }
+        : { _id: req.params.id, createdBy: req.user._id };
+    const task = await Task.findOne(taskQuery);
 
     if (!task) {
       return res.status(404).json({ message: "Task not found." });
@@ -54,7 +61,11 @@ const updateTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
   try {
-    const task = await Task.findOne({ _id: req.params.id, createdBy: req.user._id });
+    const taskQuery =
+      req.user.role === "admin"
+        ? { _id: req.params.id }
+        : { _id: req.params.id, createdBy: req.user._id };
+    const task = await Task.findOne(taskQuery);
 
     if (!task) {
       return res.status(404).json({ message: "Task not found." });

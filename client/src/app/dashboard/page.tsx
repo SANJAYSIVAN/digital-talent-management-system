@@ -18,6 +18,12 @@ type Task = {
   dueDate: string | null;
   status: "pending" | "in-progress" | "completed";
   createdAt: string;
+  createdBy?: {
+    _id?: string;
+    name: string;
+    email: string;
+    role: string;
+  };
 };
 
 type TaskForm = {
@@ -394,6 +400,11 @@ export default function DashboardPage() {
             <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
               Create tasks and track what needs to be done.
             </p>
+            {user ? (
+              <span className="mt-4 inline-flex rounded-full bg-stone-200 px-4 py-2 text-sm font-medium capitalize text-slate-700">
+                Role: {user.role}
+              </span>
+            ) : null}
           </div>
 
           <div className="flex flex-wrap gap-3">
@@ -684,6 +695,11 @@ export default function DashboardPage() {
                             <span className="rounded-full bg-stone-100 px-3 py-1">
                               Created: {formatTaskDate(task.createdAt)}
                             </span>
+                            {user?.role === "admin" && task.createdBy ? (
+                              <span className="rounded-full bg-stone-100 px-3 py-1">
+                                Owner: {task.createdBy.name}
+                              </span>
+                            ) : null}
                           </div>
 
                           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
