@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import AuthShell from "@/components/AuthShell";
+import { clearAuthSession } from "@/lib/auth";
 import { API_BASE_URL } from "@/lib/config";
 
 export default function RegisterPage() {
@@ -48,6 +49,7 @@ export default function RegisterPage() {
         throw new Error(data.message || "Registration failed.");
       }
 
+      clearAuthSession();
       setMessage("Registration successful. You can now log in.");
       setFormData({ name: "", email: "", password: "" });
 
