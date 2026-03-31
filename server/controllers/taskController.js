@@ -46,6 +46,20 @@ const updateTask = async (req, res) => {
       return res.status(404).json({ message: "Task not found." });
     }
 
+    const isTaskOwner = task.createdBy.toString() === req.user._id.toString();
+    const isAdmin = req.user.role === "admin";
+
+    if (isAdmin && !isTaskOwner) {
+      const isTryingToEditTaskContent =
+        title !== undefined || description !== undefined || dueDate !== undefined;
+
+      if (isTryingToEditTaskContent) {
+        return res.status(403).json({
+          message: "Admins can only change status for tasks created by other users.",
+        });
+      }
+    }
+
     task.title = title ?? task.title;
     task.description = description ?? task.description;
     task.dueDate = dueDate !== undefined ? dueDate || null : task.dueDate;

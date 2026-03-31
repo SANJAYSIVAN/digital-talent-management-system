@@ -377,6 +377,7 @@ export default function DashboardPage() {
   });
 
   const recentTasks = tasks.slice(0, 3);
+  const isAdmin = user?.role === "admin";
 
   if (isLoading) {
     return (
@@ -398,7 +399,9 @@ export default function DashboardPage() {
               {user ? `${user.name}'s workspace` : "Dashboard"}
             </h1>
             <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-              Create tasks and track what needs to be done.
+              {isAdmin
+                ? "Admin view for managing all tasks in the system."
+                : "Create tasks and track what needs to be done."}
             </p>
             {user ? (
               <span className="mt-4 inline-flex rounded-full bg-stone-200 px-4 py-2 text-sm font-medium capitalize text-slate-700">
@@ -460,7 +463,9 @@ export default function DashboardPage() {
               <div>
                 <h2 className="text-2xl font-semibold text-slate-900">Task overview</h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  Search tasks and filter them by status.
+                  {isAdmin
+                    ? "Review all tasks and filter them by status."
+                    : "Search your tasks and filter them by status."}
                 </p>
               </div>
               <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
@@ -493,15 +498,19 @@ export default function DashboardPage() {
           </div>
 
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
-            <h2 className="text-2xl font-semibold">Recent tasks</h2>
+            <h2 className="text-2xl font-semibold">
+              {isAdmin ? "Admin controls" : "Recent tasks"}
+            </h2>
             <p className="mt-2 text-sm leading-6 text-emerald-50/90">
-              Quick look at the latest tasks added to your workspace.
+              {isAdmin
+                ? "Admins can view all tasks, update status for any task, and fully edit only tasks they created."
+                : "Quick look at the latest tasks added to your workspace."}
             </p>
 
             <div className="mt-6 space-y-3">
               {recentTasks.length === 0 ? (
                 <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
-                  No tasks created yet.
+                  {isAdmin ? "No tasks available yet." : "No tasks created yet."}
                 </div>
               ) : (
                 recentTasks.map((task) => (
@@ -510,6 +519,11 @@ export default function DashboardPage() {
                     <p className="mt-1 text-sm text-emerald-50/90">
                       {task.status.replace("-", " ")}
                     </p>
+                    {isAdmin && task.createdBy ? (
+                      <p className="mt-1 text-sm text-emerald-50/90">
+                        Owner: {task.createdBy.name}
+                      </p>
+                    ) : null}
                   </div>
                 ))
               )}
@@ -519,9 +533,13 @@ export default function DashboardPage() {
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-            <h2 className="text-2xl font-semibold text-slate-900">Create task</h2>
+            <h2 className="text-2xl font-semibold text-slate-900">
+              {isAdmin ? "Create personal task" : "Create task"}
+            </h2>
             <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-              Add a new task to your list.
+              {isAdmin
+                ? "Tasks created here will belong to your admin account."
+                : "Add a new task to your list."}
             </p>
 
             <form onSubmit={handleCreateTask} className="mt-6 space-y-5">
@@ -592,7 +610,9 @@ export default function DashboardPage() {
               <div>
                 <h2 className="text-2xl font-semibold text-slate-900">Task list</h2>
                 <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  Edit, update status, or delete tasks from here.
+                  {isAdmin
+                    ? "Admins can review all tasks, change any task status, and fully edit only their own tasks."
+                    : "Edit, update status, or delete your tasks from here."}
                 </p>
               </div>
               <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
@@ -609,6 +629,11 @@ export default function DashboardPage() {
                 {filteredTasks.map((task) => {
                   const isEditing = editingTaskId === task._id;
                   const isTaskBusy = activeTaskId === task._id;
+                  const isOwner =
+                    !!user &&
+                    !!task.createdBy &&
+                    (task.createdBy._id === user._id || task.createdBy._id === user.id);
+                  const canEditTask = !isAdmin || isOwner;
 
                   return (
                     <article
@@ -720,14 +745,20 @@ export default function DashboardPage() {
                             </select>
 
                             <div className="flex flex-wrap gap-3">
-                              <button
-                                type="button"
-                                onClick={() => startEditingTask(task)}
-                                disabled={isTaskBusy}
-                                className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-70"
-                              >
-                                Edit
-                              </button>
+                              {canEditTask ? (
+                                <button
+                                  type="button"
+                                  onClick={() => startEditingTask(task)}
+                                  disabled={isTaskBusy}
+                                  className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-70"
+                                >
+                                  Edit
+                                </button>
+                              ) : (
+                                <span className="rounded-full border border-dashed border-[var(--border)] px-4 py-2 text-sm text-slate-500">
+                                  Admin status-only
+                                </span>
+                              )}
                               <button
                                 type="button"
                                 onClick={() => handleDeleteTask(task._id)}
