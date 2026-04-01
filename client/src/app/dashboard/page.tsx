@@ -66,6 +66,14 @@ const toInputDateValue = (value: string | null) => {
   return new Date(value).toISOString().split("T")[0];
 };
 
+const isTaskOverdue = (task: Task) => {
+  if (!task.dueDate || task.status === "completed") {
+    return false;
+  }
+
+  return new Date(task.dueDate) < new Date();
+};
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<StoredUser | null>(null);
@@ -378,6 +386,12 @@ export default function DashboardPage() {
 
   const recentTasks = tasks.slice(0, 3);
   const isAdmin = user?.role === "admin";
+  const completedCount = tasks.filter((task) => task.status === "completed").length;
+  const pendingCount = tasks.filter((task) => task.status === "pending").length;
+  const inProgressCount = tasks.filter((task) => task.status === "in-progress").length;
+  const overdueCount = tasks.filter((task) => isTaskOverdue(task)).length;
+  const completionRate =
+    tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
 
   if (isLoading) {
     return (
@@ -432,7 +446,7 @@ export default function DashboardPage() {
           </p>
         ) : null}
 
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
             <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
               Total Tasks
@@ -443,21 +457,69 @@ export default function DashboardPage() {
             <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
               Pending
             </p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900">
-              {tasks.filter((task) => task.status === "pending").length}
-            </p>
+            <p className="mt-3 text-3xl font-semibold text-slate-900">{pendingCount}</p>
           </div>
           <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
             <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
               Completed
             </p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900">
-              {tasks.filter((task) => task.status === "completed").length}
+            <p className="mt-3 text-3xl font-semibold text-slate-900">{completedCount}</p>
+          </div>
+          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+            <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+              Completion Rate
             </p>
+            <p className="mt-3 text-3xl font-semibold text-slate-900">{completionRate}%</p>
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold text-slate-900">Analytics</h2>
+                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                  Basic task insights for the current dashboard view.
+                </p>
+              </div>
+              <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
+                {completionRate}% done
+              </span>
+            </div>
+
+            <div className="mt-6 h-3 overflow-hidden rounded-full bg-stone-200">
+              <div
+                className="h-full rounded-full bg-[linear-gradient(90deg,#0f766e,#10b981)] transition-all"
+                style={{ width: `${completionRate}%` }}
+              />
+            </div>
+
+            <div className="mt-6 grid gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl bg-white p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                  In Progress
+                </p>
+                <p className="mt-3 text-2xl font-semibold text-slate-900">
+                  {inProgressCount}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                  Overdue
+                </p>
+                <p className="mt-3 text-2xl font-semibold text-slate-900">{overdueCount}</p>
+              </div>
+              <div className="rounded-2xl bg-white p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                  Active
+                </p>
+                <p className="mt-3 text-2xl font-semibold text-slate-900">
+                  {pendingCount + inProgressCount}
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
