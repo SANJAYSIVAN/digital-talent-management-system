@@ -27,7 +27,12 @@ const createTask = async (req, res) => {
       createdBy: req.user._id,
     });
 
-    return res.status(201).json(task);
+    const populatedTask = await Task.findById(task._id).populate(
+      "createdBy",
+      "name email role"
+    );
+
+    return res.status(201).json(populatedTask);
   } catch (error) {
     return res.status(500).json({ message: "Server error while creating task." });
   }
@@ -66,8 +71,12 @@ const updateTask = async (req, res) => {
     task.status = status ?? task.status;
 
     const updatedTask = await task.save();
+    const populatedTask = await Task.findById(updatedTask._id).populate(
+      "createdBy",
+      "name email role"
+    );
 
-    return res.status(200).json(updatedTask);
+    return res.status(200).json(populatedTask);
   } catch (error) {
     return res.status(500).json({ message: "Server error while updating task." });
   }

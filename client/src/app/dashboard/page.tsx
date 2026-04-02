@@ -18,12 +18,14 @@ type Task = {
   dueDate: string | null;
   status: "pending" | "in-progress" | "completed";
   createdAt: string;
-  createdBy?: {
-    _id?: string;
-    name: string;
-    email: string;
-    role: string;
-  };
+  createdBy?:
+    | string
+    | {
+        _id?: string;
+        name: string;
+        email: string;
+        role: string;
+      };
 };
 
 type TaskForm = {
@@ -72,6 +74,22 @@ const isTaskOverdue = (task: Task) => {
   }
 
   return new Date(task.dueDate) < new Date();
+};
+
+const getTaskOwnerId = (task: Task) => {
+  if (!task.createdBy) {
+    return null;
+  }
+
+  return typeof task.createdBy === "string" ? task.createdBy : task.createdBy._id || null;
+};
+
+const getTaskOwnerName = (task: Task) => {
+  if (!task.createdBy || typeof task.createdBy === "string") {
+    return null;
+  }
+
+  return task.createdBy.name;
 };
 
 export default function DashboardPage() {
@@ -346,12 +364,7 @@ export default function DashboardPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          title: currentTask.title,
-          description: currentTask.description,
-          dueDate: currentTask.dueDate,
-          status,
-        }),
+        body: JSON.stringify({ status }),
       });
 
       const data = await response.json();
@@ -693,8 +706,7 @@ export default function DashboardPage() {
                   const isTaskBusy = activeTaskId === task._id;
                   const isOwner =
                     !!user &&
-                    !!task.createdBy &&
-                    (task.createdBy._id === user._id || task.createdBy._id === user.id);
+                    getTaskOwnerId(task) === user._id || getTaskOwnerId(task) === user.id;
                   const canEditTask = !isAdmin || isOwner;
 
                   return (
@@ -782,9 +794,9 @@ export default function DashboardPage() {
                             <span className="rounded-full bg-stone-100 px-3 py-1">
                               Created: {formatTaskDate(task.createdAt)}
                             </span>
-                            {user?.role === "admin" && task.createdBy ? (
+                            {user?.role === "admin" && getTaskOwnerName(task) ? (
                               <span className="rounded-full bg-stone-100 px-3 py-1">
-                                Owner: {task.createdBy.name}
+                                Owner: {getTaskOwnerName(task)}
                               </span>
                             ) : null}
                           </div>
