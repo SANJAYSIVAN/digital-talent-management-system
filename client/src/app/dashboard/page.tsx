@@ -459,6 +459,43 @@ export default function DashboardPage() {
           </p>
         ) : null}
 
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
+            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/80">
+              {isAdmin ? "Admin Access" : "User Access"}
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold">
+              {isAdmin ? "System-wide task control" : "Personal task workspace"}
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-emerald-50/90">
+              {isAdmin
+                ? "You can review every task, see who owns it, update any task status, and fully edit tasks created by your own admin account."
+                : "You can create, edit, delete, and update the status of tasks that belong to your own account."}
+            </p>
+          </div>
+
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+            <h2 className="text-xl font-semibold text-slate-900">What this role can do</h2>
+            <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+              {isAdmin ? (
+                <>
+                  <li>See all tasks across the system.</li>
+                  <li>View task owner details in the dashboard.</li>
+                  <li>Update the status of any task.</li>
+                  <li>Edit full task details only for admin-owned tasks.</li>
+                </>
+              ) : (
+                <>
+                  <li>See only tasks created by this user account.</li>
+                  <li>Create new personal tasks.</li>
+                  <li>Edit task details and status for owned tasks.</li>
+                  <li>Delete tasks created by this user.</li>
+                </>
+              )}
+            </ul>
+          </div>
+        </div>
+
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
             <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">

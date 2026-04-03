@@ -17,6 +17,12 @@ Full stack internship project.
 - Implement create, edit, and delete tasks
 - Develop basic dashboard
 
+### Sprint 3
+
+- Implement role-based access for Admin and User
+- Add task status tracking improvements
+- Develop basic analytics such as task count and completion rate
+
 
 ## Tech Stack
 
@@ -53,6 +59,14 @@ digital-talent-management-system/
 - Task status update
 - Task search and status filtering
 - Basic dashboard overview cards
+
+## Features Added In Sprint 3
+
+- Admin and user role-based task access
+- Admin visibility of all tasks with owner information
+- Status-only control for admin on tasks owned by other users
+- Basic analytics for total, pending, completed, in-progress, and overdue tasks
+- Completion rate and progress overview in the dashboard
 
 ## Backend Setup
 
@@ -166,6 +180,8 @@ Authorization: Bearer YOUR_TOKEN_HERE
 - Delete a task
 - Change task status
 - Use search and status filters in the dashboard
+- Verify Admin and User role differences
+- Verify task analytics and completion rate
 
 ## GitHub Push Steps
 
@@ -183,6 +199,4 @@ git push -u origin main
 ## Next Steps
 
 - Final testing and polish
-- Role-based access
-- Analytics and advanced dashboard features
 - Deployment
