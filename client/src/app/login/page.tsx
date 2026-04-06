@@ -14,6 +14,7 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function LoginPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setHasSubmitted(true);
     setError("");
 
     if (!formData.email || !formData.password) {
@@ -74,9 +76,14 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             value={formData.email}
-            onChange={(event) =>
-              setFormData((current) => ({ ...current, email: event.target.value }))
-            }
+            onChange={(event) => {
+              const value = event.target.value;
+              setFormData((current) => ({ ...current, email: value }));
+
+              if (hasSubmitted && value.trim() && formData.password.trim()) {
+                setError("");
+              }
+            }}
             className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
             placeholder="Enter your email"
           />
@@ -96,9 +103,14 @@ export default function LoginPage() {
             type="password"
             autoComplete="current-password"
             value={formData.password}
-            onChange={(event) =>
-              setFormData((current) => ({ ...current, password: event.target.value }))
-            }
+            onChange={(event) => {
+              const value = event.target.value;
+              setFormData((current) => ({ ...current, password: value }));
+
+              if (hasSubmitted && formData.email.trim() && value.trim()) {
+                setError("");
+              }
+            }}
             className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
             placeholder="Enter your password"
           />
