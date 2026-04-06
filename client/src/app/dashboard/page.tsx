@@ -412,12 +412,8 @@ export default function DashboardPage() {
       }).length
     : 0;
   const roleHighlights = isAdmin
-    ? [
-        "System-wide visibility",
-        "Owner tracking",
-        "Status control across all tasks",
-      ]
-    : ["Personal workspace", "Own-task editing", "Focused progress tracking"];
+    ? ["All-task visibility", "Owner tracking", "Status control"]
+    : ["Personal workspace", "Own-task editing", "Progress tracking"];
 
   if (isLoading) {
     return (
@@ -439,51 +435,63 @@ export default function DashboardPage() {
               Digital Talent Management
             </p>
             <h1 className="mt-4 text-3xl font-semibold leading-tight">
-              {isAdmin ? "Admin control center" : "Talent workspace"}
+              {isAdmin ? "Admin workspace" : "My workspace"}
             </h1>
-            <p className="mt-4 text-sm leading-7 text-emerald-50/90">
-              {isAdmin
-                ? "Monitor delivery across the system, review ownership, and keep execution moving."
-                : "Organize your work, stay on top of deadlines, and track progress in one place."}
-            </p>
           </div>
 
-          <div className="mt-8 rounded-[1.5rem] bg-white/10 p-4 backdrop-blur">
-            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/70">Signed in as</p>
-            <p className="mt-3 text-xl font-semibold">{user?.name || "Workspace user"}</p>
-            <p className="mt-1 text-sm text-emerald-50/85">{user?.email}</p>
-            <span className="mt-4 inline-flex rounded-full bg-white/12 px-4 py-2 text-sm font-medium capitalize text-white">
-              {user?.role || "user"}
-            </span>
-          </div>
-
-          <div className="mt-8 space-y-3">
-            <div className="rounded-2xl bg-white/8 px-4 py-3">
-              <p className="text-sm font-semibold text-white">Overview</p>
-              <p className="mt-1 text-sm text-emerald-50/80">
-                {isAdmin ? "Live system snapshot" : "Personal productivity snapshot"}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/8 px-4 py-3">
-              <p className="text-sm font-semibold text-white">Tasks</p>
-              <p className="mt-1 text-sm text-emerald-50/80">
-                {isAdmin ? "Review, filter, and manage all tasks" : "Create and manage your own tasks"}
-              </p>
-            </div>
-            <div className="rounded-2xl bg-white/8 px-4 py-3">
-              <p className="text-sm font-semibold text-white">Analytics</p>
-              <p className="mt-1 text-sm text-emerald-50/80">
-                Progress, overdue work, and completion trend
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            {roleHighlights.map((item) => (
-              <div key={item} className="rounded-2xl border border-white/10 bg-white/6 px-4 py-4">
-                <p className="text-sm font-medium text-white">{item}</p>
+          <div className="mt-8 rounded-[1.75rem] bg-white/10 p-5 backdrop-blur">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/14 text-lg font-semibold text-white">
+                {(user?.name || "U").slice(0, 1).toUpperCase()}
               </div>
-            ))}
+              <div className="min-w-0">
+                <p className="truncate text-lg font-semibold text-white">
+                  {user?.name || "Workspace user"}
+                </p>
+                <p className="truncate text-sm text-emerald-50/85">{user?.email}</p>
+              </div>
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-white/8 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
+                  Role
+                </p>
+                <p className="mt-2 text-sm font-semibold capitalize text-white">
+                  {user?.role || "user"}
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white/8 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
+                  Scope
+                </p>
+                <p className="mt-2 text-sm font-semibold text-white">
+                  {isAdmin ? "All tasks" : "My tasks"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
+            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/65">
+              Quick view
+            </p>
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-3">
+                <span className="text-sm text-emerald-50/85">Tasks</span>
+                <span className="text-sm font-semibold text-white">{tasks.length}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-3">
+                <span className="text-sm text-emerald-50/85">Completed</span>
+                <span className="text-sm font-semibold text-white">{completedCount}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-3">
+                <span className="text-sm text-emerald-50/85">Active</span>
+                <span className="text-sm font-semibold text-white">
+                  {pendingCount + inProgressCount}
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -542,7 +550,7 @@ export default function DashboardPage() {
             </p>
           ) : null}
 
-          <div className="mt-8 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="mt-8">
             <div className="rounded-[1.9rem] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-7 text-white shadow-[0_20px_50px_rgba(15,118,110,0.18)]">
               <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/75">
                 {isAdmin ? "Admin Access" : "User Access"}
@@ -566,27 +574,6 @@ export default function DashboardPage() {
                   </span>
                 ))}
               </div>
-            </div>
-
-            <div className="rounded-[1.9rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-              <h2 className="text-xl font-semibold text-slate-900">What this role can do</h2>
-              <ul className="mt-5 space-y-4 text-sm leading-6 text-slate-600">
-                {isAdmin ? (
-                  <>
-                    <li>See all tasks across the system.</li>
-                    <li>View task owner details in the dashboard.</li>
-                    <li>Update the status of any task.</li>
-                    <li>Edit full task details only for admin-owned tasks.</li>
-                  </>
-                ) : (
-                  <>
-                    <li>See only tasks created by this user account.</li>
-                    <li>Create new personal tasks.</li>
-                    <li>Edit task details and status for owned tasks.</li>
-                    <li>Delete tasks created by this user.</li>
-                  </>
-                )}
-              </ul>
             </div>
           </div>
 

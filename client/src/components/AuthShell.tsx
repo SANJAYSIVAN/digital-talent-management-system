@@ -22,28 +22,13 @@ export default function AuthShell({
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10 sm:px-6 sm:py-16">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.14),_transparent_30%)]" />
       <section className="relative grid w-full max-w-5xl overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[var(--surface-strong)] shadow-[0_24px_90px_rgba(15,23,42,0.12)] lg:min-h-[650px] lg:grid-cols-[0.92fr_1.08fr]">
-        <div className="hidden bg-[linear-gradient(180deg,#0f766e,#115e59,#134e4a)] p-10 text-white lg:flex lg:flex-col lg:justify-between">
+        <div className="hidden bg-[linear-gradient(180deg,#0f766e,#115e59,#134e4a)] p-10 text-white lg:flex lg:flex-col lg:justify-center">
           <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-emerald-50/70">
-              Talent Platform
-            </p>
-            <h1 className="mt-6 text-4xl font-semibold leading-tight">
-            Digital Talent
-            <br />
-            Management System
+            <h1 className="text-4xl font-semibold leading-tight">
+              Digital Talent
+              <br />
+              Management System
             </h1>
-            <p className="mt-5 max-w-md text-sm leading-7 text-emerald-50/90">
-              Secure access for your task and talent workspace.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
-              Single place to manage accounts, tasks, and progress.
-            </div>
-            <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
-              Clean sign-in flow with protected dashboard access.
-            </div>
           </div>
         </div>
 
