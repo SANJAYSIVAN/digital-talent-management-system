@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   clearAuthSession,
   getStoredToken,
@@ -106,6 +106,8 @@ export default function DashboardPage() {
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | Task["status"]>("all");
+  const [pendingStatuses, setPendingStatuses] = useState<Record<string, Task["status"]>>({});
+  const statusUpdateTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   useEffect(() => {
     const token = getStoredToken();
@@ -164,6 +166,14 @@ export default function DashboardPage() {
 
     loadDashboardData();
   }, [router]);
+
+  useEffect(() => {
+    const timers = statusUpdateTimers.current;
+
+    return () => {
+      Object.values(timers).forEach((timer) => clearTimeout(timer));
+    };
+  }, []);
 
   const handleLogout = () => {
     clearAuthSession();
@@ -376,6 +386,15 @@ export default function DashboardPage() {
       setTasks((currentTasks) =>
         currentTasks.map((task) => (task._id === taskId ? data : task))
       );
+      setPendingStatuses((current) => {
+        const next = { ...current };
+        delete next[taskId];
+        return next;
+      });
+      if (statusUpdateTimers.current[taskId]) {
+        clearTimeout(statusUpdateTimers.current[taskId]);
+        delete statusUpdateTimers.current[taskId];
+      }
     } catch (statusError) {
       const errorMessage =
         statusError instanceof Error ? statusError.message : "Could not update status.";
@@ -383,6 +402,21 @@ export default function DashboardPage() {
     } finally {
       setActiveTaskId(null);
     }
+  };
+
+  const handlePendingStatusChange = (taskId: string, status: Task["status"]) => {
+    setPendingStatuses((current) => ({
+      ...current,
+      [taskId]: status,
+    }));
+
+    if (statusUpdateTimers.current[taskId]) {
+      clearTimeout(statusUpdateTimers.current[taskId]);
+    }
+
+    statusUpdateTimers.current[taskId] = setTimeout(() => {
+      handleStatusChange(taskId, status);
+    }, 650);
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -830,6 +864,7 @@ export default function DashboardPage() {
                     !!user &&
                     (getTaskOwnerId(task) === user._id || getTaskOwnerId(task) === user.id);
                   const canEditTask = !isAdmin || isOwner;
+                  const selectedStatus = pendingStatuses[task._id] ?? task.status;
 
                   return (
                     <article
@@ -930,9 +965,9 @@ export default function DashboardPage() {
 
                           <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,180px)_1fr] xl:items-center">
                             <select
-                              value={task.status}
+                              value={selectedStatus}
                               onChange={(event) =>
-                                handleStatusChange(
+                                handlePendingStatusChange(
                                   task._id,
                                   event.target.value as Task["status"]
                                 )
