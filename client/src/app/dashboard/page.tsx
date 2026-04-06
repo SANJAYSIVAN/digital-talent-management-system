@@ -462,8 +462,8 @@ export default function DashboardPage() {
   return (
     <main className="relative min-h-screen px-4 py-6 sm:px-6 sm:py-8">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.12),_transparent_26%)]" />
-      <section className="relative mx-auto flex w-full max-w-7xl flex-col gap-6 lg:flex-row">
-        <aside className="w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] lg:sticky lg:top-6 lg:min-h-[calc(100vh-4rem)] lg:w-[296px] xl:w-[312px]">
+      <section className="relative mx-auto grid w-full max-w-7xl gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:items-start">
+        <aside className="w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] sm:p-7">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-emerald-50/70">
               Digital Talent Management
@@ -486,7 +486,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-3">
               <div className="rounded-2xl bg-white/8 px-4 py-3">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
                   Role
@@ -544,16 +544,16 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        <div className="min-w-0 flex-1 rounded-[2rem] border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[0_24px_90px_rgba(15,23,42,0.12)] sm:p-8">
-          <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+        <div className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[0_24px_90px_rgba(15,23,42,0.12)] sm:p-8 lg:p-9">
+          <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
                 Workspace Overview
               </p>
-              <h2 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 {user ? `${user.name}'s dashboard` : "Dashboard"}
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted)]">
                 {isAdmin
                   ? "A clearer system view for reviewing task ownership, progress, and bottlenecks across the platform."
                   : "A polished personal workspace for keeping tasks organized, visible, and on schedule."}
@@ -561,13 +561,13 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2 xl:w-full xl:max-w-[360px]">
-              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-4">
+              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                   {isAdmin ? "Tasks you own" : "Your tasks"}
                 </p>
                 <p className="mt-3 text-3xl font-semibold text-slate-900">{ownedTaskCount}</p>
               </div>
-              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-4">
+              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5">
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                   Active Work
                 </p>
@@ -584,12 +584,12 @@ export default function DashboardPage() {
             </p>
           ) : null}
 
-          <div className="mt-8">
-            <div className="rounded-[1.9rem] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-7 text-white shadow-[0_20px_50px_rgba(15,118,110,0.18)]">
+          <div className="mt-9">
+            <div className="rounded-[1.9rem] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-7 text-white shadow-[0_20px_50px_rgba(15,118,110,0.18)] sm:p-8">
               <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/75">
                 {isAdmin ? "Admin Access" : "User Access"}
               </p>
-              <h2 className="mt-3 text-3xl font-semibold leading-tight">
+              <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight">
                 {isAdmin ? "System-wide task control" : "Personal task workspace"}
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90">
@@ -612,35 +612,35 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-              Total Tasks
-            </p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900">{tasks.length}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-              Pending
-            </p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900">{pendingCount}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-              Completed
-            </p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900">{completedCount}</p>
-          </div>
-          <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-            <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-              Completion Rate
-            </p>
-            <p className="mt-3 text-3xl font-semibold text-slate-900">{completionRate}%</p>
-          </div>
+            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Total Tasks
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{tasks.length}</p>
+            </div>
+            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Pending
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{pendingCount}</p>
+            </div>
+            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Completed
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{completedCount}</p>
+            </div>
+            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Completion Rate
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{completionRate}%</p>
+            </div>
           </div>
 
           <div className="mt-10 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
             <div className="space-y-5">
-              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h2 className="text-2xl font-semibold text-slate-900">Analytics</h2>
@@ -688,7 +688,7 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
+              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white sm:p-7">
                 <h2 className="text-2xl font-semibold">
                   {isAdmin ? "Admin controls" : "Recent tasks"}
                 </h2>
@@ -722,7 +722,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h2 className="text-2xl font-semibold text-slate-900">Task overview</h2>
@@ -763,114 +763,108 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-            <h2 className="text-2xl font-semibold text-slate-900">
-              {isAdmin ? "Create personal task" : "Create task"}
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-              {isAdmin
-                ? "Tasks created here will belong to your admin account."
-                : "Add a new task to your list."}
-            </p>
+            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
+              <h2 className="text-2xl font-semibold text-slate-900">
+                {isAdmin ? "Create personal task" : "Create task"}
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                {isAdmin
+                  ? "Tasks created here will belong to your admin account."
+                  : "Add a new task to your list."}
+              </p>
 
-            <form onSubmit={handleCreateTask} className="mt-6 space-y-5">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-800">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(event) =>
-                    setFormData((current) => ({ ...current, title: event.target.value }))
-                  }
-                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3.5 outline-none ring-0 transition placeholder:text-slate-400 focus:border-[var(--primary)] focus:shadow-[0_0_0_4px_rgba(15,118,110,0.12)]"
-                  placeholder="Enter task title"
-                />
-              </div>
+              <form onSubmit={handleCreateTask} className="mt-6 space-y-5">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-slate-800">Title</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(event) =>
+                      setFormData((current) => ({ ...current, title: event.target.value }))
+                    }
+                    className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3.5 outline-none ring-0 transition placeholder:text-slate-400 focus:border-[var(--primary)] focus:shadow-[0_0_0_4px_rgba(15,118,110,0.12)]"
+                    placeholder="Enter task title"
+                  />
+                </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-800">
-                  Description
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(event) =>
-                    setFormData((current) => ({
-                      ...current,
-                      description: event.target.value,
-                    }))
-                  }
-                  className="min-h-32 w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3.5 outline-none ring-0 transition placeholder:text-slate-400 focus:border-[var(--primary)] focus:shadow-[0_0_0_4px_rgba(15,118,110,0.12)]"
-                  placeholder="Enter task details"
-                />
-              </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-slate-800">Description</label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(event) =>
+                      setFormData((current) => ({
+                        ...current,
+                        description: event.target.value,
+                      }))
+                    }
+                    className="min-h-32 w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3.5 outline-none ring-0 transition placeholder:text-slate-400 focus:border-[var(--primary)] focus:shadow-[0_0_0_4px_rgba(15,118,110,0.12)]"
+                    placeholder="Enter task details"
+                  />
+                </div>
 
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-800">
-                  Due Date
-                </label>
-                <input
-                  type="date"
-                  value={formData.dueDate}
-                  onChange={(event) =>
-                    setFormData((current) => ({ ...current, dueDate: event.target.value }))
-                  }
-                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3.5 outline-none ring-0 transition focus:border-[var(--primary)] focus:shadow-[0_0_0_4px_rgba(15,118,110,0.12)]"
-                />
-              </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-slate-800">Due Date</label>
+                  <input
+                    type="date"
+                    value={formData.dueDate}
+                    onChange={(event) =>
+                      setFormData((current) => ({ ...current, dueDate: event.target.value }))
+                    }
+                    className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3.5 outline-none ring-0 transition focus:border-[var(--primary)] focus:shadow-[0_0_0_4px_rgba(15,118,110,0.12)]"
+                  />
+                </div>
 
-              {taskError ? (
-                <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {taskError}
-                </p>
-              ) : null}
+                {taskError ? (
+                  <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
+                    {taskError}
+                  </p>
+                ) : null}
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-full bg-[var(--primary)] px-6 py-3.5 font-semibold text-white transition hover:bg-[var(--primary-dark)] hover:shadow-[0_12px_24px_rgba(15,118,110,0.22)] disabled:cursor-not-allowed disabled:opacity-70"
-              >
-                {isSubmitting ? "Creating task..." : "Create Task"}
-              </button>
-            </form>
-          </div>
-
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-2xl font-semibold text-slate-900">Task list</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  {isAdmin
-                    ? "Admins can review all tasks, change any task status, and fully edit only their own tasks."
-                    : "Edit, update status, or delete your tasks from here."}
-                </p>
-              </div>
-              <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
-                {filteredTasks.length} items
-              </span>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full rounded-full bg-[var(--primary)] px-6 py-3.5 font-semibold text-white transition hover:bg-[var(--primary-dark)] hover:shadow-[0_12px_24px_rgba(15,118,110,0.22)] disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isSubmitting ? "Creating task..." : "Create Task"}
+                </button>
+              </form>
             </div>
 
-            {filteredTasks.length === 0 ? (
-              <div className="mt-6 rounded-[1.5rem] border border-dashed border-[var(--border)] bg-white px-6 py-10 text-center text-sm text-[var(--muted)]">
-                No tasks match the current search or filter.
+            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h2 className="text-2xl font-semibold text-slate-900">Task list</h2>
+                  <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
+                    {isAdmin
+                      ? "Admins can review all tasks, change any task status, and fully edit only their own tasks."
+                      : "Edit, update status, or delete your tasks from here."}
+                  </p>
+                </div>
+                <span className="inline-flex rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
+                  {filteredTasks.length} items
+                </span>
               </div>
-            ) : (
-              <div className="mt-6 space-y-4">
-                {filteredTasks.map((task) => {
-                  const isEditing = editingTaskId === task._id;
-                  const isTaskBusy = activeTaskId === task._id;
-                  const isOwner =
-                    !!user &&
-                    (getTaskOwnerId(task) === user._id || getTaskOwnerId(task) === user.id);
-                  const canEditTask = !isAdmin || isOwner;
-                  const selectedStatus = pendingStatuses[task._id] ?? task.status;
 
-                  return (
-                    <article
-                      key={task._id}
-                      className="rounded-[1.5rem] border border-[var(--border)] bg-white p-5"
-                    >
+              {filteredTasks.length === 0 ? (
+                <div className="mt-6 rounded-[1.5rem] border border-dashed border-[var(--border)] bg-white px-6 py-10 text-center text-sm text-[var(--muted)]">
+                  No tasks match the current search or filter.
+                </div>
+              ) : (
+                <div className="mt-6 space-y-4">
+                  {filteredTasks.map((task) => {
+                    const isEditing = editingTaskId === task._id;
+                    const isTaskBusy = activeTaskId === task._id;
+                    const isOwner =
+                      !!user &&
+                      (getTaskOwnerId(task) === user._id || getTaskOwnerId(task) === user.id);
+                    const canEditTask = !isAdmin || isOwner;
+                    const selectedStatus = pendingStatuses[task._id] ?? task.status;
+
+                    return (
+                      <article
+                        key={task._id}
+                        className="rounded-[1.5rem] border border-[var(--border)] bg-white p-5 sm:p-6"
+                      >
                       {isEditing ? (
                         <div className="space-y-4">
                           <input
@@ -944,7 +938,7 @@ export default function DashboardPage() {
                             </span>
                           </div>
 
-                          <div className="mt-4 flex flex-wrap gap-3 text-sm text-slate-500">
+                          <div className="mt-5 flex flex-wrap gap-3 text-sm text-slate-500">
                             <span className="rounded-full bg-stone-100 px-3 py-1">
                               Due: {formatTaskDate(task.dueDate)}
                             </span>
@@ -1003,12 +997,12 @@ export default function DashboardPage() {
                           </div>
                         </>
                       )}
-                    </article>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
