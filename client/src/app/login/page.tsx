@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import AuthShell from "@/components/AuthShell";
 import { getStoredToken, setAuthSession } from "@/lib/auth";
@@ -66,8 +67,8 @@ export default function LoginPage() {
       footerLinkHref="/register"
       footerLinkLabel="Register here"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-2">
           <label className="mb-2 block text-sm font-medium text-slate-800">Email</label>
           <input
             type="email"
@@ -81,8 +82,16 @@ export default function LoginPage() {
           />
         </div>
 
-        <div>
-          <label className="mb-2 block text-sm font-medium text-slate-800">Password</label>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <label className="block text-sm font-medium text-slate-800">Password</label>
+            <Link
+              href="/forgot-password"
+              className="shrink-0 text-sm font-medium text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <input
             type="password"
             autoComplete="current-password"
@@ -96,13 +105,15 @@ export default function LoginPage() {
         </div>
 
         {error ? (
-          <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+          <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
+            {error}
+          </p>
         ) : null}
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-full bg-[var(--primary)] px-6 py-3 font-semibold text-white transition hover:bg-[var(--primary-dark)] disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-2 w-full rounded-full bg-[var(--primary)] px-6 py-3.5 font-semibold text-white transition hover:bg-[var(--primary-dark)] disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </button>

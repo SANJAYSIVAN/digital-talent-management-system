@@ -405,6 +405,19 @@ export default function DashboardPage() {
   const overdueCount = tasks.filter((task) => isTaskOverdue(task)).length;
   const completionRate =
     tasks.length === 0 ? 0 : Math.round((completedCount / tasks.length) * 100);
+  const ownedTaskCount = user
+    ? tasks.filter((task) => {
+        const ownerId = getTaskOwnerId(task);
+        return ownerId === user._id || ownerId === user.id;
+      }).length
+    : 0;
+  const roleHighlights = isAdmin
+    ? [
+        "System-wide visibility",
+        "Owner tracking",
+        "Status control across all tasks",
+      ]
+    : ["Personal workspace", "Own-task editing", "Focused progress tracking"];
 
   if (isLoading) {
     return (
@@ -417,49 +430,119 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="relative min-h-screen px-4 py-8 sm:px-6 sm:py-10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.16),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.12),_transparent_28%)]" />
-      <section className="relative mx-auto w-full max-w-7xl rounded-[2rem] border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[0_24px_90px_rgba(15,23,42,0.12)] sm:p-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+    <main className="relative min-h-screen px-4 py-6 sm:px-6 sm:py-8">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.12),_transparent_26%)]" />
+      <section className="relative mx-auto flex w-full max-w-7xl flex-col gap-6 lg:flex-row">
+        <aside className="w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] lg:sticky lg:top-6 lg:min-h-[calc(100vh-4rem)] lg:w-[320px]">
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 sm:text-4xl">
-              {user ? `${user.name}'s workspace` : "Dashboard"}
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-              {isAdmin
-                ? "Admin view for managing all tasks in the system."
-                : "Create tasks and track what needs to be done."}
+            <p className="text-xs uppercase tracking-[0.28em] text-emerald-50/70">
+              Digital Talent Management
             </p>
-            {user ? (
-              <span className="mt-4 inline-flex rounded-full bg-stone-200 px-4 py-2 text-sm font-medium capitalize text-slate-700">
-                Role: {user.role}
-              </span>
-            ) : null}
+            <h1 className="mt-4 text-3xl font-semibold leading-tight">
+              {isAdmin ? "Admin control center" : "Talent workspace"}
+            </h1>
+            <p className="mt-4 text-sm leading-7 text-emerald-50/90">
+              {isAdmin
+                ? "Monitor delivery across the system, review ownership, and keep execution moving."
+                : "Organize your work, stay on top of deadlines, and track progress in one place."}
+            </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="mt-8 rounded-[1.5rem] bg-white/10 p-4 backdrop-blur">
+            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/70">Signed in as</p>
+            <p className="mt-3 text-xl font-semibold">{user?.name || "Workspace user"}</p>
+            <p className="mt-1 text-sm text-emerald-50/85">{user?.email}</p>
+            <span className="mt-4 inline-flex rounded-full bg-white/12 px-4 py-2 text-sm font-medium capitalize text-white">
+              {user?.role || "user"}
+            </span>
+          </div>
+
+          <div className="mt-8 space-y-3">
+            <div className="rounded-2xl bg-white/8 px-4 py-3">
+              <p className="text-sm font-semibold text-white">Overview</p>
+              <p className="mt-1 text-sm text-emerald-50/80">
+                {isAdmin ? "Live system snapshot" : "Personal productivity snapshot"}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white/8 px-4 py-3">
+              <p className="text-sm font-semibold text-white">Tasks</p>
+              <p className="mt-1 text-sm text-emerald-50/80">
+                {isAdmin ? "Review, filter, and manage all tasks" : "Create and manage your own tasks"}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white/8 px-4 py-3">
+              <p className="text-sm font-semibold text-white">Analytics</p>
+              <p className="mt-1 text-sm text-emerald-50/80">
+                Progress, overdue work, and completion trend
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {roleHighlights.map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-white/6 px-4 py-4">
+                <p className="text-sm font-medium text-white">{item}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/"
-              className="rounded-full border border-[var(--border)] px-5 py-2 font-semibold text-slate-900 transition hover:bg-stone-100"
+              className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Home
             </Link>
             <button
               onClick={handleLogout}
-              className="rounded-full bg-[var(--primary)] px-5 py-2 font-semibold text-white transition hover:bg-[var(--primary-dark)]"
+              className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-emerald-50"
             >
               Logout
             </button>
           </div>
-        </div>
+        </aside>
 
-        {error ? (
-          <p className="mt-6 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
-            {error}
-          </p>
-        ) : null}
+        <div className="min-w-0 flex-1 rounded-[2rem] border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[0_24px_90px_rgba(15,23,42,0.12)] sm:p-8">
+          <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
+                Workspace Overview
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">
+                {user ? `${user.name}'s dashboard` : "Dashboard"}
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+                {isAdmin
+                  ? "A clearer system view for reviewing task ownership, progress, and bottlenecks across the platform."
+                  : "A polished personal workspace for keeping tasks organized, visible, and on schedule."}
+              </p>
+            </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="grid gap-3 sm:grid-cols-2 xl:w-[360px]">
+              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                  {isAdmin ? "Tasks you own" : "Your tasks"}
+                </p>
+                <p className="mt-3 text-3xl font-semibold text-slate-900">{ownedTaskCount}</p>
+              </div>
+              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                  Active Work
+                </p>
+                <p className="mt-3 text-3xl font-semibold text-slate-900">
+                  {pendingCount + inProgressCount}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {error ? (
+            <p className="mt-6 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </p>
+          ) : null}
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
             <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/80">
               {isAdmin ? "Admin Access" : "User Access"}
@@ -494,9 +577,9 @@ export default function DashboardPage() {
               )}
             </ul>
           </div>
-        </div>
+          </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
             <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
               Total Tasks
@@ -521,9 +604,9 @@ export default function DashboardPage() {
             </p>
             <p className="mt-3 text-3xl font-semibold text-slate-900">{completionRate}%</p>
           </div>
-        </div>
+          </div>
 
-        <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -641,9 +724,9 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
-        </div>
+          </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
             <h2 className="text-2xl font-semibold text-slate-900">
               {isAdmin ? "Create personal task" : "Create task"}
@@ -743,7 +826,7 @@ export default function DashboardPage() {
                   const isTaskBusy = activeTaskId === task._id;
                   const isOwner =
                     !!user &&
-                    getTaskOwnerId(task) === user._id || getTaskOwnerId(task) === user.id;
+                    (getTaskOwnerId(task) === user._id || getTaskOwnerId(task) === user.id);
                   const canEditTask = !isAdmin || isOwner;
 
                   return (
@@ -887,6 +970,7 @@ export default function DashboardPage() {
                 })}
               </div>
             )}
+          </div>
           </div>
         </div>
       </section>
