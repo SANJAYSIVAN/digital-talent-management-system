@@ -542,44 +542,55 @@ export default function DashboardPage() {
             </p>
           ) : null}
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
-            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/80">
-              {isAdmin ? "Admin Access" : "User Access"}
-            </p>
-            <h2 className="mt-3 text-2xl font-semibold">
-              {isAdmin ? "System-wide task control" : "Personal task workspace"}
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-emerald-50/90">
-              {isAdmin
-                ? "You can review every task, see who owns it, update any task status, and fully edit tasks created by your own admin account."
-                : "You can create, edit, delete, and update the status of tasks that belong to your own account."}
-            </p>
+          <div className="mt-8 grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded-[1.9rem] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-7 text-white shadow-[0_20px_50px_rgba(15,118,110,0.18)]">
+              <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/75">
+                {isAdmin ? "Admin Access" : "User Access"}
+              </p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight">
+                {isAdmin ? "System-wide task control" : "Personal task workspace"}
+              </h2>
+              <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90">
+                {isAdmin
+                  ? "Review every task in the system, track ownership, unblock progress, and keep status updates moving across teams."
+                  : "Manage your personal workload, stay on top of deadlines, and keep your task progress clearly visible."}
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                {roleHighlights.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-[1.9rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+              <h2 className="text-xl font-semibold text-slate-900">What this role can do</h2>
+              <ul className="mt-5 space-y-4 text-sm leading-6 text-slate-600">
+                {isAdmin ? (
+                  <>
+                    <li>See all tasks across the system.</li>
+                    <li>View task owner details in the dashboard.</li>
+                    <li>Update the status of any task.</li>
+                    <li>Edit full task details only for admin-owned tasks.</li>
+                  </>
+                ) : (
+                  <>
+                    <li>See only tasks created by this user account.</li>
+                    <li>Create new personal tasks.</li>
+                    <li>Edit task details and status for owned tasks.</li>
+                    <li>Delete tasks created by this user.</li>
+                  </>
+                )}
+              </ul>
+            </div>
           </div>
 
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-            <h2 className="text-xl font-semibold text-slate-900">What this role can do</h2>
-            <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-              {isAdmin ? (
-                <>
-                  <li>See all tasks across the system.</li>
-                  <li>View task owner details in the dashboard.</li>
-                  <li>Update the status of any task.</li>
-                  <li>Edit full task details only for admin-owned tasks.</li>
-                </>
-              ) : (
-                <>
-                  <li>See only tasks created by this user account.</li>
-                  <li>Create new personal tasks.</li>
-                  <li>Edit task details and status for owned tasks.</li>
-                  <li>Delete tasks created by this user.</li>
-                </>
-              )}
-            </ul>
-          </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
             <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
               Total Tasks
@@ -606,127 +617,131 @@ export default function DashboardPage() {
           </div>
           </div>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-2xl font-semibold text-slate-900">Analytics</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  Basic task insights for the current dashboard view.
-                </p>
-              </div>
-              <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
-                {completionRate}% done
-              </span>
-            </div>
-
-            <div className="mt-6 h-3 overflow-hidden rounded-full bg-stone-200">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#0f766e,#10b981)] transition-all"
-                style={{ width: `${completionRate}%` }}
-              />
-            </div>
-
-            <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              <div className="rounded-2xl bg-white p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                  In Progress
-                </p>
-                <p className="mt-3 text-2xl font-semibold text-slate-900">
-                  {inProgressCount}
-                </p>
-              </div>
-              <div className="rounded-2xl bg-white p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                  Overdue
-                </p>
-                <p className="mt-3 text-2xl font-semibold text-slate-900">{overdueCount}</p>
-              </div>
-              <div className="rounded-2xl bg-white p-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                  Active
-                </p>
-                <p className="mt-3 text-2xl font-semibold text-slate-900">
-                  {pendingCount + inProgressCount}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h2 className="text-2xl font-semibold text-slate-900">Task overview</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                  {isAdmin
-                    ? "Review all tasks and filter them by status."
-                    : "Search your tasks and filter them by status."}
-                </p>
-              </div>
-              <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
-                {filteredTasks.length} shown
-              </span>
-            </div>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-[1fr_auto]">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search by title or description"
-                className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)]"
-              />
-
-              <select
-                value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value as "all" | Task["status"])
-                }
-                className="rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)]"
-              >
-                <option value="all">All statuses</option>
-                <option value="pending">Pending</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
-            <h2 className="text-2xl font-semibold">
-              {isAdmin ? "Admin controls" : "Recent tasks"}
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-emerald-50/90">
-              {isAdmin
-                ? "Admins can view all tasks, update status for any task, and fully edit only tasks they created."
-                : "Quick look at the latest tasks added to your workspace."}
-            </p>
-
-            <div className="mt-6 space-y-3">
-              {recentTasks.length === 0 ? (
-                <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
-                  {isAdmin ? "No tasks available yet." : "No tasks created yet."}
-                </div>
-              ) : (
-                recentTasks.map((task) => (
-                  <div key={task._id} className="rounded-2xl bg-white/10 px-4 py-4">
-                    <p className="font-semibold text-white">{task.title}</p>
-                    <p className="mt-1 text-sm text-emerald-50/90">
-                      {task.status.replace("-", " ")}
+          <div className="mt-10 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
+            <div className="space-y-5">
+              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h2 className="text-2xl font-semibold text-slate-900">Analytics</h2>
+                    <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                      Basic task insights for the current dashboard view.
                     </p>
-                    {isAdmin && task.createdBy ? (
-                      <p className="mt-1 text-sm text-emerald-50/90">
-                        Owner: {task.createdBy.name}
-                      </p>
-                    ) : null}
                   </div>
-                ))
-              )}
+                  <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
+                    {completionRate}% done
+                  </span>
+                </div>
+
+                <div className="mt-6 h-3 overflow-hidden rounded-full bg-stone-200">
+                  <div
+                    className="h-full rounded-full bg-[linear-gradient(90deg,#0f766e,#10b981)] transition-all"
+                    style={{ width: `${completionRate}%` }}
+                  />
+                </div>
+
+                <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                  <div className="rounded-2xl bg-white p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                      In Progress
+                    </p>
+                    <p className="mt-3 text-2xl font-semibold text-slate-900">
+                      {inProgressCount}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-white p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Overdue
+                    </p>
+                    <p className="mt-3 text-2xl font-semibold text-slate-900">
+                      {overdueCount}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl bg-white p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Active
+                    </p>
+                    <p className="mt-3 text-2xl font-semibold text-slate-900">
+                      {pendingCount + inProgressCount}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white">
+                <h2 className="text-2xl font-semibold">
+                  {isAdmin ? "Admin controls" : "Recent tasks"}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-emerald-50/90">
+                  {isAdmin
+                    ? "Admins can view all tasks, update status for any task, and fully edit only tasks they created."
+                    : "Quick look at the latest tasks added to your workspace."}
+                </p>
+
+                <div className="mt-6 space-y-3">
+                  {recentTasks.length === 0 ? (
+                    <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
+                      {isAdmin ? "No tasks available yet." : "No tasks created yet."}
+                    </div>
+                  ) : (
+                    recentTasks.map((task) => (
+                      <div key={task._id} className="rounded-2xl bg-white/10 px-4 py-4">
+                        <p className="font-semibold text-white">{task.title}</p>
+                        <p className="mt-1 text-sm text-emerald-50/90">
+                          {task.status.replace("-", " ")}
+                        </p>
+                        {isAdmin && getTaskOwnerName(task) ? (
+                          <p className="mt-1 text-sm text-emerald-50/90">
+                            Owner: {getTaskOwnerName(task)}
+                          </p>
+                        ) : null}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-2xl font-semibold text-slate-900">Task overview</h2>
+                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                    {isAdmin
+                      ? "Review all tasks and filter them by status."
+                      : "Search your tasks and filter them by status."}
+                  </p>
+                </div>
+                <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
+                  {filteredTasks.length} shown
+                </span>
+              </div>
+
+              <div className="mt-6 grid gap-4 md:grid-cols-[1fr_auto]">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="Search by title or description"
+                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)]"
+                />
+
+                <select
+                  value={statusFilter}
+                  onChange={(event) =>
+                    setStatusFilter(event.target.value as "all" | Task["status"])
+                  }
+                  className="rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)]"
+                >
+                  <option value="all">All statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
             </div>
           </div>
-          </div>
 
-          <div className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="mt-10 grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
           <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6">
             <h2 className="text-2xl font-semibold text-slate-900">
               {isAdmin ? "Create personal task" : "Create task"}
