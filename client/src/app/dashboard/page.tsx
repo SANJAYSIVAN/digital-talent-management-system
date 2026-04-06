@@ -429,7 +429,7 @@ export default function DashboardPage() {
     <main className="relative min-h-screen px-4 py-6 sm:px-6 sm:py-8">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.12),_transparent_26%)]" />
       <section className="relative mx-auto flex w-full max-w-7xl flex-col gap-6 lg:flex-row">
-        <aside className="w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] lg:sticky lg:top-6 lg:min-h-[calc(100vh-4rem)] lg:w-[320px]">
+        <aside className="w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] lg:sticky lg:top-6 lg:min-h-[calc(100vh-4rem)] lg:w-[296px] xl:w-[312px]">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-emerald-50/70">
               Digital Talent Management
@@ -526,7 +526,7 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 xl:w-[360px]">
+            <div className="grid gap-3 sm:grid-cols-2 xl:w-full xl:max-w-[360px]">
               <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                   {isAdmin ? "Tasks you own" : "Your tasks"}
@@ -921,9 +921,14 @@ export default function DashboardPage() {
                                 Owner: {getTaskOwnerName(task)}
                               </span>
                             ) : null}
+                            {!canEditTask ? (
+                              <span className="rounded-full border border-dashed border-[var(--border)] px-3 py-1 text-slate-500">
+                                Admin status-only
+                              </span>
+                            ) : null}
                           </div>
 
-                          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,180px)_1fr] xl:items-center">
                             <select
                               value={task.status}
                               onChange={(event) =>
@@ -933,33 +938,29 @@ export default function DashboardPage() {
                                 )
                               }
                               disabled={isTaskBusy}
-                              className="rounded-full border border-[var(--border)] bg-white px-4 py-2 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-70"
+                              className="w-full rounded-full border border-[var(--border)] bg-white px-4 py-2.5 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)] disabled:cursor-not-allowed disabled:opacity-70"
                             >
                               <option value="pending">Pending</option>
                               <option value="in-progress">In Progress</option>
                               <option value="completed">Completed</option>
                             </select>
 
-                            <div className="flex flex-wrap gap-3">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap xl:justify-end">
                               {canEditTask ? (
                                 <button
                                   type="button"
                                   onClick={() => startEditingTask(task)}
                                   disabled={isTaskBusy}
-                                  className="rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-70"
+                                  className="inline-flex min-h-10 w-full items-center justify-center rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
                                 >
                                   Edit
                                 </button>
-                              ) : (
-                                <span className="rounded-full border border-dashed border-[var(--border)] px-4 py-2 text-sm text-slate-500">
-                                  Admin status-only
-                                </span>
-                              )}
+                              ) : null}
                               <button
                                 type="button"
                                 onClick={() => handleDeleteTask(task._id)}
                                 disabled={isTaskBusy}
-                                className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70"
+                                className="inline-flex min-h-10 w-full items-center justify-center rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
                               >
                                 {isTaskBusy ? "Working..." : "Delete"}
                               </button>
