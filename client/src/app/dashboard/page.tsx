@@ -448,6 +448,7 @@ export default function DashboardPage() {
   const roleHighlights = isAdmin
     ? ["All-task visibility", "Owner tracking", "Status control"]
     : ["Personal workspace", "Own-task editing", "Progress tracking"];
+  const hasTasks = tasks.length > 0;
 
   if (isLoading) {
     return (
@@ -528,22 +529,22 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             <Link
               href="/profile"
-              className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Profile
             </Link>
             <Link
               href="/"
-              className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Home
             </Link>
             <button
               onClick={handleLogout}
-              className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-emerald-50"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-emerald-50"
             >
               Logout
             </button>
@@ -591,20 +592,20 @@ export default function DashboardPage() {
           ) : null}
 
           <div className="mt-9">
-            <div className="rounded-[1.9rem] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-7 text-white shadow-[0_20px_50px_rgba(15,118,110,0.18)] sm:p-8">
+            <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white shadow-[0_20px_50px_rgba(15,118,110,0.18)] sm:p-7">
               <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/75">
                 {isAdmin ? "Admin Access" : "User Access"}
               </p>
-              <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight">
+              <h2 className="mt-3 text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
                 {isAdmin ? "System-wide task control" : "Personal task workspace"}
               </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-emerald-50/90">
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-emerald-50/90">
                 {isAdmin
                   ? "Review every task in the system, track ownership, unblock progress, and keep status updates moving across teams."
                   : "Manage your personal workload, stay on top of deadlines, and keep your task progress clearly visible."}
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-5 flex flex-wrap gap-3">
                 {roleHighlights.map((item) => (
                   <span
                     key={item}
@@ -651,7 +652,9 @@ export default function DashboardPage() {
                   <div>
                     <h2 className="text-2xl font-semibold text-slate-900">Analytics</h2>
                     <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                      Basic task insights for the current dashboard view.
+                      {hasTasks
+                        ? "Basic task insights for the current dashboard view."
+                        : "Create tasks to start seeing progress and completion insights."}
                     </p>
                   </div>
                   <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
@@ -700,14 +703,16 @@ export default function DashboardPage() {
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-emerald-50/90">
                   {isAdmin
-                    ? "Admins can view all tasks, update status for any task, and fully edit only tasks they created."
+                    ? "Track task ownership and progress across the system."
                     : "Quick look at the latest tasks added to your workspace."}
                 </p>
 
                 <div className="mt-6 space-y-3">
                   {recentTasks.length === 0 ? (
-                    <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm text-emerald-50/90">
-                      {isAdmin ? "No tasks available yet." : "No tasks created yet."}
+                    <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm leading-6 text-emerald-50/90">
+                      {isAdmin
+                        ? "No tasks are available yet. Create a task to start managing work across the system."
+                        : "No tasks created yet. Add your first task to get started."}
                     </div>
                   ) : (
                     recentTasks.map((task) => (
@@ -728,22 +733,22 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <h2 className="text-2xl font-semibold text-slate-900">Task overview</h2>
-                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                  <h2 className="text-lg font-semibold text-slate-900">Task filters</h2>
+                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
                     {isAdmin
-                      ? "Review all tasks and filter them by status."
-                      : "Search your tasks and filter them by status."}
+                      ? "Filter the task list by text and status."
+                      : "Use these filters to narrow your task list."}
                   </p>
                 </div>
-                <span className="rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
+                <span className="inline-flex w-fit rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
                   {filteredTasks.length} shown
                 </span>
               </div>
 
-              <div className="mt-6 grid gap-4 md:grid-cols-[1fr_auto]">
+              <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
                 <input
                   type="text"
                   value={searchTerm}
@@ -757,7 +762,7 @@ export default function DashboardPage() {
                   onChange={(event) =>
                     setStatusFilter(event.target.value as "all" | Task["status"])
                   }
-                  className="rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)]"
+                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)]"
                 >
                   <option value="all">All statuses</option>
                   <option value="pending">Pending</option>
@@ -853,7 +858,9 @@ export default function DashboardPage() {
 
               {filteredTasks.length === 0 ? (
                 <div className="mt-6 rounded-[1.5rem] border border-dashed border-[var(--border)] bg-white px-6 py-10 text-center text-sm text-[var(--muted)]">
-                  No tasks match the current search or filter.
+                  {hasTasks
+                    ? "No tasks match the current search or filter."
+                    : "No tasks yet. Create your first task to start building the workspace."}
                 </div>
               ) : (
                 <div className="mt-6 space-y-4">
