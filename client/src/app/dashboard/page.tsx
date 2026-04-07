@@ -469,12 +469,12 @@ export default function DashboardPage() {
             <p className="text-xs uppercase tracking-[0.28em] text-emerald-50/70">
               Digital Talent Management
             </p>
-            <h1 className="mt-4 text-3xl font-semibold leading-tight">
+            <h1 className="mt-3 text-3xl font-semibold leading-tight">
               {isAdmin ? "Admin workspace" : "My workspace"}
             </h1>
           </div>
 
-          <div className="mt-8 rounded-[1.75rem] bg-white/10 p-5 backdrop-blur">
+          <div className="mt-7 rounded-[1.75rem] bg-white/10 p-5 backdrop-blur">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/14 text-lg font-semibold text-white">
                 {(user?.name || "U").slice(0, 1).toUpperCase()}
@@ -487,40 +487,40 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-white/8 px-4 py-3">
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-white/8 px-4 py-2.5">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
                   Role
                 </p>
-                <p className="mt-2 text-sm font-semibold capitalize text-white">
+                <p className="mt-1.5 text-sm font-semibold capitalize text-white">
                   {user?.role || "user"}
                 </p>
               </div>
-              <div className="rounded-2xl bg-white/8 px-4 py-3">
+              <div className="rounded-2xl bg-white/8 px-4 py-2.5">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
                   Scope
                 </p>
-                <p className="mt-2 text-sm font-semibold text-white">
+                <p className="mt-1.5 text-sm font-semibold text-white">
                   {isAdmin ? "All tasks" : "My tasks"}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
+          <div className="mt-7 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
             <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/65">
               Quick view
             </p>
             <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-3">
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
                 <span className="text-sm text-emerald-50/85">Tasks</span>
                 <span className="text-sm font-semibold text-white">{tasks.length}</span>
               </div>
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-3">
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
                 <span className="text-sm text-emerald-50/85">Completed</span>
                 <span className="text-sm font-semibold text-white">{completedCount}</span>
               </div>
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-3">
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
                 <span className="text-sm text-emerald-50/85">Active</span>
                 <span className="text-sm font-semibold text-white">
                   {pendingCount + inProgressCount}
@@ -529,16 +529,16 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             <Link
               href="/profile"
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-white/6 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Profile
             </Link>
             <Link
               href="/"
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-white/6 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Home
             </Link>
@@ -645,9 +645,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-10 grid gap-5 xl:grid-cols-[0.95fr_1.05fr]">
-            <div className="space-y-5">
-              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
+          <div className="mt-10 grid gap-5 lg:grid-cols-2">
+            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h2 className="text-2xl font-semibold text-slate-900">Analytics</h2>
@@ -695,82 +694,43 @@ export default function DashboardPage() {
                     </p>
                   </div>
                 </div>
-              </div>
-
-              <div className="rounded-[1.8rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white sm:p-7">
-                <h2 className="text-2xl font-semibold">
-                  {isAdmin ? "Admin controls" : "Recent tasks"}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-emerald-50/90">
-                  {isAdmin
-                    ? "Track task ownership and progress across the system."
-                    : "Quick look at the latest tasks added to your workspace."}
-                </p>
-
-                <div className="mt-6 space-y-3">
-                  {recentTasks.length === 0 ? (
-                    <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm leading-6 text-emerald-50/90">
-                      {isAdmin
-                        ? "No tasks are available yet. Create a task to start managing work across the system."
-                        : "No tasks created yet. Add your first task to get started."}
-                    </div>
-                  ) : (
-                    recentTasks.map((task) => (
-                      <div key={task._id} className="rounded-2xl bg-white/10 px-4 py-4">
-                        <p className="font-semibold text-white">{task.title}</p>
-                        <p className="mt-1 text-sm text-emerald-50/90">
-                          {task.status.replace("-", " ")}
-                        </p>
-                        {isAdmin && getTaskOwnerName(task) ? (
-                          <p className="mt-1 text-sm text-emerald-50/90">
-                            Owner: {getTaskOwnerName(task)}
-                          </p>
-                        ) : null}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
             </div>
 
-            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Task filters</h2>
-                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">
+            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white sm:p-7">
+              <h2 className="text-2xl font-semibold">
+                {isAdmin ? "Admin controls" : "Recent tasks"}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-emerald-50/90">
+                {isAdmin
+                  ? "Track task ownership and progress across the system."
+                  : "Quick look at the latest tasks added to your workspace."}
+              </p>
+
+              <div className="mt-6 space-y-3">
+                {recentTasks.length === 0 ? (
+                  <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm leading-6 text-emerald-50/90">
                     {isAdmin
-                      ? "Filter the task list by text and status."
-                      : "Use these filters to narrow your task list."}
-                  </p>
-                </div>
-                <span className="inline-flex w-fit rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
-                  {filteredTasks.length} shown
-                </span>
-              </div>
-
-              <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  placeholder="Search by title or description"
-                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)]"
-                />
-
-                <select
-                  value={statusFilter}
-                  onChange={(event) =>
-                    setStatusFilter(event.target.value as "all" | Task["status"])
-                  }
-                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)]"
-                >
-                  <option value="all">All statuses</option>
-                  <option value="pending">Pending</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                </select>
+                      ? "No tasks are available yet. Create a task to start managing work across the system."
+                      : "No tasks created yet. Add your first task to get started."}
+                  </div>
+                ) : (
+                  recentTasks.map((task) => (
+                    <div key={task._id} className="rounded-2xl bg-white/10 px-4 py-4">
+                      <p className="font-semibold text-white">{task.title}</p>
+                      <p className="mt-1 text-sm text-emerald-50/90">
+                        {task.status.replace("-", " ")}
+                      </p>
+                      {isAdmin && getTaskOwnerName(task) ? (
+                        <p className="mt-1 text-sm text-emerald-50/90">
+                          Owner: {getTaskOwnerName(task)}
+                        </p>
+                      ) : null}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
+
           </div>
 
           <div className="mt-10 grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
@@ -854,6 +814,29 @@ export default function DashboardPage() {
                 <span className="inline-flex rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
                   {filteredTasks.length} items
                 </span>
+              </div>
+
+              <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="Search by title or description"
+                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition placeholder:text-slate-400 focus:border-[var(--primary)]"
+                />
+
+                <select
+                  value={statusFilter}
+                  onChange={(event) =>
+                    setStatusFilter(event.target.value as "all" | Task["status"])
+                  }
+                  className="w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-[var(--primary)]"
+                >
+                  <option value="all">All statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
               </div>
 
               {filteredTasks.length === 0 ? (

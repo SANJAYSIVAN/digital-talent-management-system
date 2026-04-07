@@ -46,6 +46,7 @@ export default function ProfilePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [hasProfileDetails, setHasProfileDetails] = useState(false);
 
   useEffect(() => {
     const token = getStoredToken();
@@ -81,6 +82,14 @@ export default function ProfilePage() {
           skills: Array.isArray(user.skills) ? user.skills.join(", ") : "",
           joinedDate: toInputDate(user.joinedDate),
         });
+        setHasProfileDetails(
+          Boolean(
+            user.department ||
+              user.designation ||
+              (Array.isArray(user.skills) && user.skills.length > 0) ||
+              user.joinedDate
+          )
+        );
       } catch (fetchError) {
         const errorMessage =
           fetchError instanceof Error ? fetchError.message : "Could not load profile.";
@@ -143,6 +152,7 @@ export default function ProfilePage() {
 
       setAuthSession(token, data.user);
       setMessage("Profile updated successfully.");
+      setHasProfileDetails(true);
     } catch (submitError) {
       const errorMessage =
         submitError instanceof Error ? submitError.message : "Could not update profile.";
@@ -295,7 +305,13 @@ export default function ProfilePage() {
               disabled={isSubmitting}
               className="rounded-full bg-[var(--primary)] px-6 py-3 font-semibold text-white transition hover:bg-[var(--primary-dark)] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isSubmitting ? "Saving..." : "Save profile"}
+              {isSubmitting
+                ? hasProfileDetails
+                  ? "Updating..."
+                  : "Saving..."
+                : hasProfileDetails
+                  ? "Update profile"
+                  : "Save profile"}
             </button>
           </div>
         </form>
