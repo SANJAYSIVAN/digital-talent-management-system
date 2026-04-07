@@ -23,6 +23,24 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    department: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    designation: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    joinedDate: {
+      type: Date,
+      default: Date.now,
+    },
     resetPasswordToken: {
       type: String,
       default: null,

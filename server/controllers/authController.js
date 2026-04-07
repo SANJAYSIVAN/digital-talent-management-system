@@ -6,9 +6,20 @@ const User = require("../models/User");
 const generateToken = (userId) =>
   jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
+const getUserPayload = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  department: user.department || "",
+  designation: user.designation || "",
+  skills: user.skills || [],
+  joinedDate: user.joinedDate || null,
+});
+
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, department, designation, skills, joinedDate } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "Please provide name, email, and password." });
@@ -30,16 +41,15 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role: adminExists ? "user" : "admin",
+      department: department || "",
+      designation: designation || "",
+      skills: Array.isArray(skills) ? skills : [],
+      joinedDate: joinedDate || undefined,
     });
 
     return res.status(201).json({
       message: "User registered successfully.",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: getUserPayload(user),
     });
   } catch (error) {
     return res.status(500).json({ message: "Server error during registration." });
@@ -78,12 +88,7 @@ const loginUser = async (req, res) => {
     return res.status(200).json({
       message: "Login successful.",
       token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: getUserPayload(user),
     });
   } catch (error) {
     return res.status(500).json({ message: "Server error during login." });
@@ -166,10 +171,41 @@ const getCurrentUser = async (req, res) => {
   });
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const { name, department, designation, skills, joinedDate } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    user.name = name?.trim() || user.name;
+    user.department = department?.trim() ?? user.department;
+    user.designation = designation?.trim() ?? user.designation;
+    user.skills = Array.isArray(skills)
+      ? skills
+          .map((skill) => String(skill).trim())
+          .filter(Boolean)
+      : user.skills;
+    user.joinedDate = joinedDate || user.joinedDate;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Profile updated successfully.",
+      user: getUserPayload(user),
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error while updating profile." });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   forgotPassword,
   resetPassword,
   getCurrentUser,
+  updateProfile,
 };

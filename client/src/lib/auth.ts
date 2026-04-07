@@ -7,6 +7,10 @@ export type StoredUser = {
   name: string;
   email: string;
   role: string;
+  department?: string;
+  designation?: string;
+  skills?: string[];
+  joinedDate?: string | null;
 };
 
 export const setAuthSession = (token: string, user: StoredUser) => {
