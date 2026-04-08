@@ -556,21 +556,27 @@ export default function DashboardPage() {
               Talent profile
             </p>
             <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
-                <span className="text-sm text-emerald-50/85">Department</span>
-                <span className="max-w-[130px] truncate text-sm font-semibold text-white">
+              <div className="rounded-2xl bg-white/8 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
+                  Department
+                </p>
+                <p className="mt-2 truncate text-sm font-semibold text-white">
                   {user?.department || "Not set"}
-                </span>
+                </p>
               </div>
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
-                <span className="text-sm text-emerald-50/85">Designation</span>
-                <span className="max-w-[130px] truncate text-sm font-semibold text-white">
+              <div className="rounded-2xl bg-white/8 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
+                  Designation
+                </p>
+                <p className="mt-2 truncate text-sm font-semibold text-white">
                   {user?.designation || "Not set"}
-                </span>
+                </p>
               </div>
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
-                <span className="text-sm text-emerald-50/85">Skills</span>
-                <span className="text-sm font-semibold text-white">{skillCount}</span>
+              <div className="rounded-2xl bg-white/8 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
+                  Skills
+                </p>
+                <p className="mt-2 text-sm font-semibold text-white">{skillCount}</p>
               </div>
             </div>
           </div>
