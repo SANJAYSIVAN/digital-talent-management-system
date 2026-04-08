@@ -60,6 +60,20 @@ const formatTaskDate = (value: string | null) => {
   return date.toLocaleDateString();
 };
 
+const formatProfileDate = (value?: string | null) => {
+  if (!value) {
+    return "Not set";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not set";
+  }
+
+  return date.toLocaleDateString();
+};
+
 const toInputDateValue = (value: string | null) => {
   if (!value) {
     return "";
@@ -449,6 +463,14 @@ export default function DashboardPage() {
     ? ["All-task visibility", "Owner tracking", "Status control"]
     : ["Personal workspace", "Own-task editing", "Progress tracking"];
   const hasTasks = tasks.length > 0;
+  const skillCount = user?.skills?.length || 0;
+  const profileCompletion = [
+    user?.department,
+    user?.designation,
+    skillCount > 0 ? "skills" : "",
+    user?.joinedDate,
+  ].filter(Boolean).length;
+  const profileCompletionRate = Math.round((profileCompletion / 4) * 100);
 
   if (isLoading) {
     return (
@@ -529,6 +551,30 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          <div className="mt-7 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
+            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/65">
+              Talent profile
+            </p>
+            <div className="mt-4 space-y-3">
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
+                <span className="text-sm text-emerald-50/85">Department</span>
+                <span className="max-w-[130px] truncate text-sm font-semibold text-white">
+                  {user?.department || "Not set"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
+                <span className="text-sm text-emerald-50/85">Designation</span>
+                <span className="max-w-[130px] truncate text-sm font-semibold text-white">
+                  {user?.designation || "Not set"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
+                <span className="text-sm text-emerald-50/85">Skills</span>
+                <span className="text-sm font-semibold text-white">{skillCount}</span>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             <Link
               href="/profile"
@@ -581,6 +627,103 @@ export default function DashboardPage() {
                 <p className="mt-3 text-3xl font-semibold text-slate-900">
                   {pendingCount + inProgressCount}
                 </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">
+                    Profile Snapshot
+                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold text-slate-900">
+                    {user?.designation || "Add your designation"}
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                    {user?.department
+                      ? `${user.department} team member`
+                      : "Update your profile to show team and role details in the workspace."}
+                  </p>
+                </div>
+                <span className="inline-flex w-fit rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
+                  {profileCompletionRate}% complete
+                </span>
+              </div>
+
+              <div className="mt-5 h-3 overflow-hidden rounded-full bg-stone-200">
+                <div
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#0f766e,#10b981)]"
+                  style={{ width: `${profileCompletionRate}%` }}
+                />
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                <div className="rounded-2xl bg-white p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Department
+                  </p>
+                  <p className="mt-3 text-base font-semibold text-slate-900">
+                    {user?.department || "Not set"}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Skills
+                  </p>
+                  <p className="mt-3 text-base font-semibold text-slate-900">
+                    {skillCount > 0 ? `${skillCount} added` : "Not set"}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Joined
+                  </p>
+                  <p className="mt-3 text-base font-semibold text-slate-900">
+                    {formatProfileDate(user?.joinedDate)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">
+                    Talent Focus
+                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold text-slate-900">
+                    {isAdmin ? "Team visibility" : "Growth details"}
+                  </h3>
+                </div>
+                <Link
+                  href="/profile"
+                  className="inline-flex rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100"
+                >
+                  Open profile
+                </Link>
+              </div>
+
+              <div className="mt-5 space-y-3">
+                <div className="rounded-2xl bg-white px-4 py-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Current role
+                  </p>
+                  <p className="mt-2 text-base font-semibold capitalize text-slate-900">
+                    {user?.role || "user"}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white px-4 py-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Profile strength
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    {profileCompletionRate >= 75
+                      ? "Your dashboard now includes a strong talent profile snapshot."
+                      : "Add more employee details to make the workspace feel more complete."}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
