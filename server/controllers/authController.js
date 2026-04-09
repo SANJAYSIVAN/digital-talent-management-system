@@ -17,6 +17,16 @@ const getUserPayload = (user) => ({
   joinedDate: user.joinedDate || null,
 });
 
+const getFrontendUrl = () => {
+  const value = process.env.FRONTEND_URLS || process.env.FRONTEND_URL || "";
+  const firstUrl = value
+    .split(",")
+    .map((url) => url.trim())
+    .find(Boolean);
+
+  return firstUrl || "http://localhost:3000";
+};
+
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, department, designation, skills, joinedDate } = req.body;
@@ -25,7 +35,8 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Please provide name, email, and password." });
     }
 
-    const existingUser = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+    const existingUser = await User.findOne({ email: normalizedEmail });
 
     if (existingUser) {
       return res.status(400).json({ message: "User already exists with this email." });
@@ -38,7 +49,7 @@ const registerUser = async (req, res) => {
 
     const user = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       role: adminExists ? "user" : "admin",
       department: department || "",
@@ -64,7 +75,8 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Please provide email and password." });
     }
 
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password." });
@@ -103,7 +115,8 @@ const forgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Please provide your email address." });
     }
 
-    const user = await User.findOne({ email });
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await User.findOne({ email: normalizedEmail });
 
     if (!user) {
       return res.status(200).json({
@@ -120,7 +133,7 @@ const forgotPassword = async (req, res) => {
 
     return res.status(200).json({
       message: "Password reset link generated successfully.",
-      resetUrl: `/reset-password?token=${rawToken}`,
+      resetUrl: `${getFrontendUrl()}/reset-password?token=${rawToken}`,
     });
   } catch (error) {
     return res.status(500).json({ message: "Server error while preparing password reset." });

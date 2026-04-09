@@ -1,6 +1,6 @@
 # Digital Talent Management System
 
-Full stack internship project.
+Full stack internship project for authentication, task management, role-based access, profile management, and dashboard analytics.
 
 ## Scope
 
@@ -9,7 +9,6 @@ Full stack internship project.
 - Setup frontend and backend architecture
 - Implement user registration and login
 - Connect the backend to MongoDB
-
 
 ### Sprint 2
 
@@ -23,6 +22,11 @@ Full stack internship project.
 - Add task status tracking improvements
 - Develop basic analytics such as task count and completion rate
 
+### Sprint 4
+
+- Refine dashboard and profile experience
+- Improve final UI polish and usability
+- Prepare frontend and backend for deployment
 
 ## Tech Stack
 
@@ -39,7 +43,7 @@ digital-talent-management-system/
   server/
 ```
 
-## Features Completed In Sprint 1
+## Features Added In Sprint 1
 
 - User registration API
 - User login API
@@ -68,6 +72,14 @@ digital-talent-management-system/
 - Basic analytics for total, pending, completed, in-progress, and overdue tasks
 - Completion rate and progress overview in the dashboard
 
+## Features Added In Sprint 4
+
+- Employee profile page with department, designation, skills, and joined date
+- Profile-aware dashboard sections and talent profile snapshot
+- Forgot password and reset password flow
+- Refined dashboard layout, task filtering, spacing, and action handling
+- Deployment-ready frontend and backend environment examples
+
 ## Backend Setup
 
 Go to the `server` folder and install dependencies:
@@ -77,12 +89,13 @@ cd server
 npm.cmd install
 ```
 
-Create a `.env` file inside the `server` folder and add:
+Create a `.env` file inside the `server` folder from `server/.env.example` and add:
 
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/dtms
 JWT_SECRET=mySuperSecretKeyForSprint1Auth2026
+FRONTEND_URL=http://localhost:3000
 ```
 
 Start the backend:
@@ -124,28 +137,9 @@ http://localhost:3000
 
 `POST /api/auth/register`
 
-Request body:
-
-```json
-{
-  "name": "Mksan",
-  "email": "mksan@example.com",
-  "password": "123456"
-}
-```
-
 ### Login
 
 `POST /api/auth/login`
-
-Request body:
-
-```json
-{
-  "email": "mksan@example.com",
-  "password": "123456"
-}
-```
 
 ### Current User
 
@@ -157,6 +151,16 @@ Header:
 Authorization: Bearer YOUR_TOKEN_HERE
 ```
 
+### Profile
+
+`PUT /api/auth/profile`
+
+### Password Recovery
+
+`POST /api/auth/forgot-password`
+
+`POST /api/auth/reset-password`
+
 ### Tasks
 
 `GET /api/tasks`
@@ -166,6 +170,10 @@ Authorization: Bearer YOUR_TOKEN_HERE
 `PUT /api/tasks/:id`
 
 `DELETE /api/tasks/:id`
+
+### Health Check
+
+`GET /api/health`
 
 ## Testing Checklist
 
@@ -182,21 +190,11 @@ Authorization: Bearer YOUR_TOKEN_HERE
 - Use search and status filters in the dashboard
 - Verify Admin and User role differences
 - Verify task analytics and completion rate
+- Verify profile update flow
+- Verify forgot password and reset password flow
 
-## GitHub Push Steps
+## Deployment Notes
 
-From the project root:
-
-```powershell
-git init
-git add .
-git commit -m "Sprint 1 authentication setup"
-git branch -M main
-git remote add origin YOUR_GITHUB_REPO_URL
-git push -u origin main
-```
-
-## Next Steps
-
-- Final testing and polish
-- Deployment
+- Deploy the backend first and set `FRONTEND_URL` to the live frontend URL.
+- Set `NEXT_PUBLIC_API_URL` in the frontend to the deployed backend URL.
+- Re-test login, dashboard, profile, tasks, and password reset after both deployments are live.

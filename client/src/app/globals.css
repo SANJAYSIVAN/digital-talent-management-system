@@ -9,6 +9,8 @@
   --primary-dark: #115e59;
   --muted: #6b7280;
   --border: #d6d3d1;
+  --font-sans: "Aptos", "Segoe UI", "Trebuchet MS", sans-serif;
+  --font-mono: "Consolas", "SFMono-Regular", "Liberation Mono", monospace;
 }
 
 @theme inline {
