@@ -191,7 +191,7 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     clearAuthSession();
-    router.push("/login");
+    router.push("/");
   };
 
   const getAuthToken = () => {
@@ -459,9 +459,6 @@ export default function DashboardPage() {
         return ownerId === user._id || ownerId === user.id;
       }).length
     : 0;
-  const roleHighlights = isAdmin
-    ? ["All-task visibility", "Owner tracking", "Status control"]
-    : ["Personal workspace", "Own-task editing", "Progress tracking"];
   const hasTasks = tasks.length > 0;
   const skillCount = user?.skills?.length || 0;
   const profileCompletion = [
@@ -485,8 +482,8 @@ export default function DashboardPage() {
   return (
     <main className="relative min-h-screen px-4 py-6 sm:px-6 sm:py-8">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.12),_transparent_26%)]" />
-      <section className="relative mx-auto grid w-full max-w-7xl gap-6 xl:grid-cols-[300px_minmax(0,1fr)] xl:items-start">
-        <aside className="w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] sm:p-7">
+      <section className="relative mx-auto grid w-full max-w-[1500px] gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
+        <aside className="self-start w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] sm:p-7">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-emerald-50/70">
               Digital Talent Management
@@ -529,7 +526,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-7 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
+          <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
             <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/65">
               Quick view
             </p>
@@ -548,10 +545,14 @@ export default function DashboardPage() {
                   {pendingCount + inProgressCount}
                 </span>
               </div>
+              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
+                <span className="text-sm text-emerald-50/85">Profile</span>
+                <span className="text-sm font-semibold text-white">{profileCompletionRate}%</span>
+              </div>
             </div>
           </div>
 
-          <div className="mt-7 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
+          <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
             <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/65">
               Talent profile
             </p>
@@ -578,21 +579,23 @@ export default function DashboardPage() {
                 </p>
                 <p className="mt-2 text-sm font-semibold text-white">{skillCount}</p>
               </div>
+              <div className="rounded-2xl bg-white/8 px-4 py-3">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
+                  Joined
+                </p>
+                <p className="mt-2 text-sm font-semibold text-white">
+                  {formatProfileDate(user?.joinedDate)}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          <div className="mt-6 grid gap-3">
             <Link
               href="/profile"
               className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-white/6 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
             >
               Profile
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-white/6 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              Home
             </Link>
             <button
               onClick={handleLogout}
@@ -604,68 +607,141 @@ export default function DashboardPage() {
         </aside>
 
         <div className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[0_24px_90px_rgba(15,23,42,0.12)] sm:p-8 lg:p-9">
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
-            <div>
+          {error ? (
+            <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              {error}
+            </p>
+          ) : null}
+
+          <div className={`${error ? "mt-6" : ""} flex flex-col gap-6 2xl:flex-row 2xl:items-end 2xl:justify-between`}>
+            <div className="min-w-0">
               <p className="text-xs uppercase tracking-[0.28em] text-[var(--muted)]">
                 Workspace Overview
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 {user ? `${user.name}'s dashboard` : "Dashboard"}
               </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted)]">
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--muted)]">
                 {isAdmin
-                  ? "A clearer system view for reviewing task ownership, progress, and bottlenecks across the platform."
-                  : "A polished personal workspace for keeping tasks organized, visible, and on schedule."}
+                  ? "Monitor ownership, workload, and delivery progress across the workspace."
+                  : "Track your workload, update task progress, and keep your profile current."}
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 xl:w-full xl:max-w-[360px]">
-              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5">
+            <div className="grid gap-3 sm:grid-cols-2 2xl:w-full 2xl:max-w-[360px]">
+              <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface)] px-5 py-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                  {isAdmin ? "Tasks you own" : "Your tasks"}
+                  {isAdmin ? "Owned tasks" : "Your tasks"}
                 </p>
-                <p className="mt-3 text-3xl font-semibold text-slate-900">{ownedTaskCount}</p>
+                <p className="mt-2 text-3xl font-semibold text-slate-900">{ownedTaskCount}</p>
               </div>
-              <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5">
+              <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface)] px-5 py-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                  Active Work
+                  Active work
                 </p>
-                <p className="mt-3 text-3xl font-semibold text-slate-900">
+                <p className="mt-2 text-3xl font-semibold text-slate-900">
                   {pendingCount + inProgressCount}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface)] p-5">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Total Tasks
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{tasks.length}</p>
+            </div>
+            <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface)] p-5">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Pending
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{pendingCount}</p>
+            </div>
+            <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface)] p-5">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Completed
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{completedCount}</p>
+            </div>
+            <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface)] p-5">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                Completion Rate
+              </p>
+              <p className="mt-3 text-3xl font-semibold text-slate-900">{completionRate}%</p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-5 xl:grid-cols-[1.12fr_0.88fr]">
+            <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+              <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">
-                    Profile Snapshot
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Performance snapshot
                   </p>
-                  <h3 className="mt-2 text-2xl font-semibold text-slate-900">
-                    {user?.designation || "Add your designation"}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                    {user?.department
-                      ? `${user.department} team member`
-                      : "Update your profile to show team and role details in the workspace."}
-                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold text-slate-900">Analytics</h3>
                 </div>
-                <span className="inline-flex w-fit rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
-                  {profileCompletionRate}% complete
+                <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
+                  {completionRate}% done
                 </span>
               </div>
 
               <div className="mt-5 h-3 overflow-hidden rounded-full bg-stone-200">
                 <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#0f766e,#10b981)]"
-                  style={{ width: `${profileCompletionRate}%` }}
+                  className="h-full rounded-full bg-[linear-gradient(90deg,#0f766e,#10b981)] transition-all"
+                  style={{ width: `${completionRate}%` }}
                 />
               </div>
 
-              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                <div className="rounded-2xl bg-white p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    In Progress
+                  </p>
+                  <p className="mt-3 text-2xl font-semibold text-slate-900">
+                    {inProgressCount}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Overdue
+                  </p>
+                  <p className="mt-3 text-2xl font-semibold text-slate-900">{overdueCount}</p>
+                </div>
+                <div className="rounded-2xl bg-white p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Profile
+                  </p>
+                  <p className="mt-3 text-2xl font-semibold text-slate-900">
+                    {profileCompletionRate}%
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                    Profile snapshot
+                  </p>
+                  <h3 className="mt-2 text-2xl font-semibold text-slate-900">
+                    {user?.designation || "Complete your profile"}
+                  </h3>
+                  <p className="mt-2 text-sm text-[var(--muted)]">
+                    {user?.department || "Department not set"}
+                  </p>
+                </div>
+                <Link
+                  href="/profile"
+                  className="inline-flex rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100"
+                >
+                  Open profile
+                </Link>
+              </div>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl bg-white p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                     Department
@@ -676,214 +752,26 @@ export default function DashboardPage() {
                 </div>
                 <div className="rounded-2xl bg-white p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                    Skills
-                  </p>
-                  <p className="mt-3 text-base font-semibold text-slate-900">
-                    {skillCount > 0 ? `${skillCount} added` : "Not set"}
-                  </p>
-                </div>
-                <div className="rounded-2xl bg-white p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                     Joined
                   </p>
                   <p className="mt-3 text-base font-semibold text-slate-900">
                     {formatProfileDate(user?.joinedDate)}
                   </p>
                 </div>
-              </div>
-            </div>
-
-            <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.22em] text-[var(--muted)]">
-                    Talent Focus
-                  </p>
-                  <h3 className="mt-2 text-2xl font-semibold text-slate-900">
-                    {isAdmin ? "Team visibility" : "Growth details"}
-                  </h3>
-                </div>
-                <Link
-                  href="/profile"
-                  className="inline-flex rounded-full border border-[var(--border)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-stone-100"
-                >
-                  Open profile
-                </Link>
-              </div>
-
-              <div className="mt-5 space-y-3">
-                <div className="rounded-2xl bg-white px-4 py-4">
+                <div className="rounded-2xl bg-white p-4 sm:col-span-2">
                   <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                    Current role
+                    Skills
                   </p>
-                  <p className="mt-2 text-base font-semibold capitalize text-slate-900">
-                    {user?.role || "user"}
-                  </p>
-                </div>
-                <div className="rounded-2xl bg-white px-4 py-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                    Profile strength
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {profileCompletionRate >= 75
-                      ? "Your dashboard now includes a strong talent profile snapshot."
-                      : "Add more employee details to make the workspace feel more complete."}
+                  <p className="mt-3 text-base font-semibold text-slate-900">
+                    {skillCount > 0 ? `${skillCount} skills added` : "No skills added yet"}
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {error ? (
-            <p className="mt-6 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
-              {error}
-            </p>
-          ) : null}
-
-          <div className="mt-9">
-            <div className="rounded-[1.75rem] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white shadow-[0_20px_50px_rgba(15,118,110,0.18)] sm:p-7">
-              <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/75">
-                {isAdmin ? "Admin Access" : "User Access"}
-              </p>
-              <h2 className="mt-3 text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
-                {isAdmin ? "System-wide task control" : "Personal task workspace"}
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-emerald-50/90">
-                {isAdmin
-                  ? "Review every task in the system, track ownership, unblock progress, and keep status updates moving across teams."
-                  : "Manage your personal workload, stay on top of deadlines, and keep your task progress clearly visible."}
-              </p>
-
-              <div className="mt-5 flex flex-wrap gap-3">
-                {roleHighlights.map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Total Tasks
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-slate-900">{tasks.length}</p>
-            </div>
-            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Pending
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-slate-900">{pendingCount}</p>
-            </div>
-            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Completed
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-slate-900">{completedCount}</p>
-            </div>
-            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6">
-              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                Completion Rate
-              </p>
-              <p className="mt-3 text-3xl font-semibold text-slate-900">{completionRate}%</p>
-            </div>
-          </div>
-
-          <div className="mt-10 grid gap-5 lg:grid-cols-2">
-            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h2 className="text-2xl font-semibold text-slate-900">Analytics</h2>
-                    <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
-                      {hasTasks
-                        ? "Basic task insights for the current dashboard view."
-                        : "Create tasks to start seeing progress and completion insights."}
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-800">
-                    {completionRate}% done
-                  </span>
-                </div>
-
-                <div className="mt-6 h-3 overflow-hidden rounded-full bg-stone-200">
-                  <div
-                    className="h-full rounded-full bg-[linear-gradient(90deg,#0f766e,#10b981)] transition-all"
-                    style={{ width: `${completionRate}%` }}
-                  />
-                </div>
-
-                <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                  <div className="rounded-2xl bg-white p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                      In Progress
-                    </p>
-                    <p className="mt-3 text-2xl font-semibold text-slate-900">
-                      {inProgressCount}
-                    </p>
-                  </div>
-                  <div className="rounded-2xl bg-white p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                      Overdue
-                    </p>
-                    <p className="mt-3 text-2xl font-semibold text-slate-900">
-                      {overdueCount}
-                    </p>
-                  </div>
-                  <div className="rounded-2xl bg-white p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                      Active
-                    </p>
-                    <p className="mt-3 text-2xl font-semibold text-slate-900">
-                      {pendingCount + inProgressCount}
-                    </p>
-                  </div>
-                </div>
-            </div>
-
-            <div className="rounded-[1.8rem] border border-[var(--border)] bg-[linear-gradient(135deg,#0f766e,#115e59)] p-6 text-white sm:p-7">
-              <h2 className="text-2xl font-semibold">
-                {isAdmin ? "Admin controls" : "Recent tasks"}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-emerald-50/90">
-                {isAdmin
-                  ? "Track task ownership and progress across the system."
-                  : "Quick look at the latest tasks added to your workspace."}
-              </p>
-
-              <div className="mt-6 space-y-3">
-                {recentTasks.length === 0 ? (
-                  <div className="rounded-2xl bg-white/10 px-4 py-4 text-sm leading-6 text-emerald-50/90">
-                    {isAdmin
-                      ? "No tasks are available yet. Create a task to start managing work across the system."
-                      : "No tasks created yet. Add your first task to get started."}
-                  </div>
-                ) : (
-                  recentTasks.map((task) => (
-                    <div key={task._id} className="rounded-2xl bg-white/10 px-4 py-4">
-                      <p className="font-semibold text-white">{task.title}</p>
-                      <p className="mt-1 text-sm text-emerald-50/90">
-                        {task.status.replace("-", " ")}
-                      </p>
-                      {isAdmin && getTaskOwnerName(task) ? (
-                        <p className="mt-1 text-sm text-emerald-50/90">
-                          Owner: {getTaskOwnerName(task)}
-                        </p>
-                      ) : null}
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-          </div>
-
-          <div className="mt-10 grid gap-6 lg:grid-cols-[0.88fr_1.12fr]">
-            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
+          <div className="mt-8 grid items-start gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+            <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-6">
               <h2 className="text-2xl font-semibold text-slate-900">
                 {isAdmin ? "Create personal task" : "Create task"}
               </h2>
@@ -950,7 +838,47 @@ export default function DashboardPage() {
               </form>
             </div>
 
-            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-6 sm:p-7">
+            <div className="space-y-6">
+              <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                      Recent activity
+                    </p>
+                    <h3 className="mt-2 text-2xl font-semibold text-slate-900">Recent tasks</h3>
+                  </div>
+                  <span className="inline-flex rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
+                    {recentTasks.length} shown
+                  </span>
+                </div>
+
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  {recentTasks.length === 0 ? (
+                    <div className="md:col-span-3 rounded-[1.25rem] border border-dashed border-[var(--border)] bg-white px-5 py-6 text-sm text-[var(--muted)]">
+                      No recent tasks yet.
+                    </div>
+                  ) : (
+                    recentTasks.map((task) => (
+                      <div
+                        key={task._id}
+                        className="rounded-[1.25rem] border border-[var(--border)] bg-white p-4"
+                      >
+                        <p className="font-semibold text-slate-900">{task.title}</p>
+                        <p className="mt-2 text-sm capitalize text-slate-600">
+                          {task.status.replace("-", " ")}
+                        </p>
+                        {isAdmin && getTaskOwnerName(task) ? (
+                          <p className="mt-2 text-sm text-slate-500">
+                            Owner: {getTaskOwnerName(task)}
+                          </p>
+                        ) : null}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="text-2xl font-semibold text-slate-900">Task list</h2>
@@ -1147,6 +1075,7 @@ export default function DashboardPage() {
                   })}
                 </div>
               )}
+              </div>
             </div>
           </div>
         </div>
