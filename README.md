@@ -11,6 +11,12 @@ This application was developed sprint by sprint as an individual build:
 - Sprint 3: admin/user access control and analytics
 - Sprint 4: profile flow, UI refinement, password reset flow, and deployment readiness
 
+## Live Links
+
+- Live Frontend: https://digital-talent-management-system-teal.vercel.app
+- Live Backend: https://digital-talent-management-system-yiow.onrender.com
+- GitHub Repository: https://github.com/SANJAYSIVAN/digital-talent-management-system
+
 ## Core Features
 
 - Shared landing page with register/login card
@@ -21,6 +27,10 @@ This application was developed sprint by sprint as an individual build:
 - Employee profile management
 - Dashboard analytics for progress and workload
 - Forgot password and reset password flow
+
+## Current Limitation
+
+- Password reset email delivery is not configured yet in the live version. The reset flow is present, but production email sending still needs to be integrated.
 
 ## Tech Stack
 
@@ -166,4 +176,4 @@ http://localhost:3000
 
 ## Current Status
 
-The project is feature-complete through Sprint 4 and is in final deployment/testing stage.
+The project is feature-complete through Sprint 4, deployed live, and ready for final submission.
