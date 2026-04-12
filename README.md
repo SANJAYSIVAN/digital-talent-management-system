@@ -1,32 +1,26 @@
 # Digital Talent Management System
 
-Full stack internship project for authentication, task management, role-based access, profile management, and dashboard analytics.
+Full stack internship project built with Next.js, Express, and MongoDB for authentication, task management, role-based access, employee profiles, and dashboard analytics.
 
-## Scope
+## Overview
 
-### Sprint 1
+This application was developed sprint by sprint as an individual build:
 
-- Setup frontend and backend architecture
-- Implement user registration and login
-- Connect the backend to MongoDB
+- Sprint 1: project setup, authentication, and database connection
+- Sprint 2: task management module and basic dashboard
+- Sprint 3: admin/user access control and analytics
+- Sprint 4: profile flow, UI refinement, password reset flow, and deployment readiness
 
-### Sprint 2
+## Core Features
 
-- Build Task Management module
-- Implement create, edit, and delete tasks
-- Develop basic dashboard
-
-### Sprint 3
-
-- Implement role-based access for Admin and User
-- Add task status tracking improvements
-- Develop basic analytics such as task count and completion rate
-
-### Sprint 4
-
-- Refine dashboard and profile experience
-- Improve final UI polish and usability
-- Prepare frontend and backend for deployment
+- Shared landing page with register/login card
+- JWT-based authentication
+- Protected dashboard
+- Role-based task access for Admin and User
+- Task create, edit, delete, search, filter, and status tracking
+- Employee profile management
+- Dashboard analytics for progress and workload
+- Forgot password and reset password flow
 
 ## Tech Stack
 
@@ -43,62 +37,26 @@ digital-talent-management-system/
   server/
 ```
 
-## Features Added In Sprint 1
+## Local Setup
 
-- User registration API
-- User login API
-- Protected `GET /api/auth/me` route
-- Local MongoDB connection
-- Frontend register page
-- Frontend login page
-- Protected dashboard page
-
-## Features Added In Sprint 2
-
-- Task model and protected task APIs
-- Create task form in dashboard
-- Task listing in dashboard
-- Edit task functionality
-- Delete task functionality
-- Task status update
-- Task search and status filtering
-- Basic dashboard overview cards
-
-## Features Added In Sprint 3
-
-- Admin and user role-based task access
-- Admin visibility of all tasks with owner information
-- Status-only control for admin on tasks owned by other users
-- Basic analytics for total, pending, completed, in-progress, and overdue tasks
-- Completion rate and progress overview in the dashboard
-
-## Features Added In Sprint 4
-
-- Employee profile page with department, designation, skills, and joined date
-- Profile-aware dashboard sections and talent profile snapshot
-- Forgot password and reset password flow
-- Refined dashboard layout, task filtering, spacing, and action handling
-- Deployment-ready frontend and backend environment examples
-
-## Backend Setup
-
-Go to the `server` folder and install dependencies:
+### 1. Backend
 
 ```powershell
 cd server
 npm.cmd install
 ```
 
-Create a `.env` file inside the `server` folder from `server/.env.example` and add:
+Create `server/.env` from `server/.env.example`:
 
 ```env
 PORT=5000
 MONGO_URI=mongodb://127.0.0.1:27017/dtms
-JWT_SECRET=mySuperSecretKeyForSprint1Auth2026
+JWT_SECRET=replace_with_a_secure_secret
 FRONTEND_URL=http://localhost:3000
+EXPOSE_RESET_URL=true
 ```
 
-Start the backend:
+Run the backend:
 
 ```powershell
 node server.js
@@ -111,90 +69,101 @@ Server running on port 5000
 MongoDB connected
 ```
 
-## Frontend Setup
-
-Open a second terminal and go to the `client` folder:
+### 2. Frontend
 
 ```powershell
 cd client
 npm.cmd install
+```
+
+Create `client/.env.local` from `client/.env.local.example` if needed:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+
+Run the frontend:
+
+```powershell
 npm.cmd run dev
 ```
 
-Optional frontend environment file:
-
-Create `client/.env.local` from `client/.env.local.example` if you want to change the backend URL.
-
-Open the app at:
+Open:
 
 ```text
 http://localhost:3000
 ```
 
-## API Endpoints
+## Auth Flow
 
-### Register
+- `/` is the main landing page and auth entry point
+- register and login are handled inside the same auth card
+- `/login` redirects to `/?mode=login`
+- `/register` redirects to `/`
+- logout returns the user to `/`
 
-`POST /api/auth/register`
+## Main API Endpoints
 
-### Login
+### Auth
 
-`POST /api/auth/login`
-
-### Current User
-
-`GET /api/auth/me`
-
-Header:
-
-```text
-Authorization: Bearer YOUR_TOKEN_HERE
-```
-
-### Profile
-
-`PUT /api/auth/profile`
-
-### Password Recovery
-
-`POST /api/auth/forgot-password`
-
-`POST /api/auth/reset-password`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `PUT /api/auth/profile`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
 
 ### Tasks
 
-`GET /api/tasks`
+- `GET /api/tasks`
+- `POST /api/tasks`
+- `PUT /api/tasks/:id`
+- `DELETE /api/tasks/:id`
 
-`POST /api/tasks`
+### Health
 
-`PUT /api/tasks/:id`
-
-`DELETE /api/tasks/:id`
-
-### Health Check
-
-`GET /api/health`
+- `GET /api/health`
 
 ## Testing Checklist
 
-- Register a new user
-- Login with the same user
-- Confirm JWT token is returned
-- Open the dashboard after login
-- Refresh the dashboard and confirm the user stays authenticated
-- Logout and confirm dashboard access is removed
+- Register from the landing page
+- Login from the landing page
+- Confirm dashboard opens after login
+- Refresh dashboard and confirm session is preserved
+- Logout and confirm user returns to home
 - Create a task
 - Edit a task
 - Delete a task
 - Change task status
-- Use search and status filters in the dashboard
+- Search and filter tasks
 - Verify Admin and User role differences
-- Verify task analytics and completion rate
-- Verify profile update flow
-- Verify forgot password and reset password flow
+- Update profile fields
+- Verify analytics update properly
+- Test forgot password and reset password flow
 
 ## Deployment Notes
 
-- Deploy the backend first and set `FRONTEND_URL` to the live frontend URL.
-- Set `NEXT_PUBLIC_API_URL` in the frontend to the deployed backend URL.
-- Re-test login, dashboard, profile, tasks, and password reset after both deployments are live.
+### Backend
+
+- Deploy backend first
+- Set:
+  - `PORT`
+  - `MONGO_URI`
+  - `JWT_SECRET`
+  - `FRONTEND_URL`
+  - `EXPOSE_RESET_URL=false` for production
+
+### Frontend
+
+- Set `NEXT_PUBLIC_API_URL` to the deployed backend URL
+- Re-test:
+  - landing page auth flow
+  - dashboard
+  - profile
+  - task CRUD
+  - role-based access
+  - password reset
+
+## Current Status
+
+The project is feature-complete through Sprint 4 and is in final deployment/testing stage.
