@@ -28,10 +28,6 @@ This application was developed sprint by sprint as an individual build:
 - Dashboard analytics for progress and workload
 - Forgot password and reset password flow
 
-## Current Limitation
-
-- Password reset email delivery is not configured yet in the live version. The reset flow is present, but production email sending still needs to be integrated.
-
 ## Tech Stack
 
 - Frontend: Next.js
