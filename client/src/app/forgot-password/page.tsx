@@ -92,8 +92,7 @@ export default function ForgotPasswordPage() {
               </Link>
             ) : (
               <p className="text-emerald-700/90">
-                If email delivery is enabled in production, the reset link should arrive in the
-                user&apos;s inbox.
+                Password reset email delivery is not configured yet in this live version.
               </p>
             )}
           </div>
