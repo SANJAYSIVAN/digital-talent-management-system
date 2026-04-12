@@ -27,6 +27,9 @@ const getFrontendUrl = () => {
   return firstUrl || "http://localhost:3000";
 };
 
+const shouldExposeResetUrl = () =>
+  process.env.EXPOSE_RESET_URL === "true" || process.env.NODE_ENV !== "production";
+
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, department, designation, skills, joinedDate } = req.body;
@@ -131,10 +134,15 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + 1000 * 60 * 15);
     await user.save();
 
-    return res.status(200).json({
+    const responsePayload = {
       message: "Password reset link generated successfully.",
-      resetUrl: `${getFrontendUrl()}/reset-password?token=${rawToken}`,
-    });
+    };
+
+    if (shouldExposeResetUrl()) {
+      responsePayload.resetUrl = `${getFrontendUrl()}/reset-password?token=${rawToken}`;
+    }
+
+    return res.status(200).json(responsePayload);
   } catch (error) {
     return res.status(500).json({ message: "Server error while preparing password reset." });
   }

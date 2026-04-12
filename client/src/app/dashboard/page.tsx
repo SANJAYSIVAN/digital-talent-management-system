@@ -7,6 +7,7 @@ import {
   clearAuthSession,
   getStoredToken,
   getStoredUser,
+  setAuthSession,
   StoredUser,
 } from "@/lib/auth";
 import { API_BASE_URL } from "@/lib/config";
@@ -128,7 +129,7 @@ export default function DashboardPage() {
     const cachedUser = getStoredUser();
 
     if (!token) {
-      router.replace("/login");
+      router.replace("/?mode=login");
       return;
     }
 
@@ -163,7 +164,7 @@ export default function DashboardPage() {
         }
 
         setUser(userData.user);
-        localStorage.setItem("user", JSON.stringify(userData.user));
+        setAuthSession(token, userData.user);
         setTasks(tasksData);
       } catch (fetchError) {
         const errorMessage =
@@ -171,7 +172,7 @@ export default function DashboardPage() {
         setError(errorMessage);
         clearAuthSession();
         setTimeout(() => {
-          router.push("/login");
+          router.push("/?mode=login");
         }, 1500);
       } finally {
         setIsLoading(false);
@@ -198,7 +199,7 @@ export default function DashboardPage() {
     const token = getStoredToken();
 
     if (!token) {
-      router.replace("/login");
+      router.replace("/?mode=login");
       return null;
     }
 
@@ -461,6 +462,12 @@ export default function DashboardPage() {
     : 0;
   const hasTasks = tasks.length > 0;
   const skillCount = user?.skills?.length || 0;
+  const skillPreview = (user?.skills || []).slice(0, 4);
+  const visibleOwnerCount = new Set(
+    tasks
+      .map((task) => getTaskOwnerId(task))
+      .filter((ownerId): ownerId is string => Boolean(ownerId))
+  ).size;
   const profileCompletion = [
     user?.department,
     user?.designation,
@@ -577,7 +584,20 @@ export default function DashboardPage() {
                 <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
                   Skills
                 </p>
-                <p className="mt-2 text-sm font-semibold text-white">{skillCount}</p>
+                {skillPreview.length > 0 ? (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {skillPreview.map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-sm font-semibold text-white">Not set</p>
+                )}
               </div>
               <div className="rounded-2xl bg-white/8 px-4 py-3">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
@@ -637,10 +657,10 @@ export default function DashboardPage() {
               </div>
               <div className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface)] px-5 py-4">
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                  Active work
+                  {isAdmin ? "Visible owners" : "Active work"}
                 </p>
                 <p className="mt-2 text-3xl font-semibold text-slate-900">
-                  {pendingCount + inProgressCount}
+                  {isAdmin ? visibleOwnerCount : pendingCount + inProgressCount}
                 </p>
               </div>
             </div>
@@ -762,9 +782,22 @@ export default function DashboardPage() {
                   <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                     Skills
                   </p>
-                  <p className="mt-3 text-base font-semibold text-slate-900">
-                    {skillCount > 0 ? `${skillCount} skills added` : "No skills added yet"}
-                  </p>
+                  {skillPreview.length > 0 ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {skillPreview.map((skill) => (
+                        <span
+                          key={skill}
+                          className="rounded-full bg-stone-100 px-3 py-1 text-sm font-medium text-slate-700"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-base font-semibold text-slate-900">
+                      No skills added yet
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

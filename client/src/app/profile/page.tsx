@@ -47,13 +47,18 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [hasProfileDetails, setHasProfileDetails] = useState(false);
+  const skillPreview = formData.skills
+    .split(",")
+    .map((skill) => skill.trim())
+    .filter(Boolean)
+    .slice(0, 6);
 
   useEffect(() => {
     const token = getStoredToken();
     const storedUser = getStoredUser();
 
     if (!token) {
-      router.replace("/login");
+      router.replace("/?mode=login");
       return;
     }
 
@@ -96,7 +101,7 @@ export default function ProfilePage() {
         setError(errorMessage);
         clearAuthSession();
         setTimeout(() => {
-          router.push("/login");
+          router.push("/?mode=login");
         }, 1200);
       } finally {
         setIsLoading(false);
@@ -114,7 +119,7 @@ export default function ProfilePage() {
     const token = getStoredToken();
 
     if (!token) {
-      router.replace("/login");
+      router.replace("/?mode=login");
       return;
     }
 
@@ -285,6 +290,18 @@ export default function ProfilePage() {
               className="min-h-28 w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 outline-none transition focus:border-[var(--primary)]"
               placeholder="Enter skills separated by commas"
             />
+            {skillPreview.length > 0 ? (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {skillPreview.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-full bg-stone-100 px-3 py-1 text-sm font-medium text-slate-700"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           {error ? (

@@ -89,6 +89,7 @@ export default function Home() {
       }));
       setRegisterForm(initialRegisterForm);
       setMode("login");
+      router.replace("/?mode=login");
     } catch (submitError) {
       const errorMessage =
         submitError instanceof Error ? submitError.message : "Registration failed.";

@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
       }
 
       setMessage(data.message || "Password reset link generated successfully.");
-      if (data.resetUrl) {
+      if (typeof data.resetUrl === "string" && data.resetUrl) {
         setResetUrl(data.resetUrl);
       }
     } catch (submitError) {
@@ -90,7 +90,12 @@ export default function ForgotPasswordPage() {
               >
                 Open reset page
               </Link>
-            ) : null}
+            ) : (
+              <p className="text-emerald-700/90">
+                If email delivery is enabled in production, the reset link should arrive in the
+                user&apos;s inbox.
+              </p>
+            )}
           </div>
         ) : null}
 
