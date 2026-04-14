@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import {
   clearAuthSession,
   getStoredToken,
@@ -11,6 +11,8 @@ import {
   StoredUser,
 } from "@/lib/auth";
 import { API_BASE_URL } from "@/lib/config";
+import DashboardSidebar from "@/components/DashboardSidebar";
+import RecentTasksPanel from "@/components/RecentTasksPanel";
 
 type Task = {
   _id: string;
@@ -475,6 +477,12 @@ export default function DashboardPage() {
     user?.joinedDate,
   ].filter(Boolean).length;
   const profileCompletionRate = Math.round((profileCompletion / 4) * 100);
+  const recentTaskCards = recentTasks.map((task) => ({
+    _id: task._id,
+    title: task.title,
+    status: task.status,
+    ownerName: getTaskOwnerName(task),
+  }));
 
   if (isLoading) {
     return (
@@ -490,141 +498,17 @@ export default function DashboardPage() {
     <main className="relative min-h-screen px-4 py-6 sm:px-6 sm:py-8">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(15,118,110,0.18),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(249,115,22,0.12),_transparent_26%)]" />
       <section className="relative mx-auto grid w-full max-w-[1500px] gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:items-start">
-        <aside className="self-start w-full rounded-[2rem] border border-[rgba(255,255,255,0.18)] bg-[linear-gradient(180deg,#0f766e,#134e4a)] p-6 text-white shadow-[0_24px_90px_rgba(15,23,42,0.14)] sm:p-7">
-          <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-emerald-50/70">
-              Digital Talent Management
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold leading-tight">
-              {isAdmin ? "Admin workspace" : "My workspace"}
-            </h1>
-          </div>
-
-          <div className="mt-7 rounded-[1.75rem] bg-white/10 p-5 backdrop-blur">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/14 text-lg font-semibold text-white">
-                {(user?.name || "U").slice(0, 1).toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <p className="truncate text-lg font-semibold text-white">
-                  {user?.name || "Workspace user"}
-                </p>
-                <p className="truncate text-sm text-emerald-50/85">{user?.email}</p>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-white/8 px-4 py-2.5">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
-                  Role
-                </p>
-                <p className="mt-1.5 text-sm font-semibold capitalize text-white">
-                  {user?.role || "user"}
-                </p>
-              </div>
-              <div className="rounded-2xl bg-white/8 px-4 py-2.5">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
-                  Scope
-                </p>
-                <p className="mt-1.5 text-sm font-semibold text-white">
-                  {isAdmin ? "All tasks" : "My tasks"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
-            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/65">
-              Quick view
-            </p>
-            <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
-                <span className="text-sm text-emerald-50/85">Tasks</span>
-                <span className="text-sm font-semibold text-white">{tasks.length}</span>
-              </div>
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
-                <span className="text-sm text-emerald-50/85">Completed</span>
-                <span className="text-sm font-semibold text-white">{completedCount}</span>
-              </div>
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
-                <span className="text-sm text-emerald-50/85">Active</span>
-                <span className="text-sm font-semibold text-white">
-                  {pendingCount + inProgressCount}
-                </span>
-              </div>
-              <div className="flex items-center justify-between rounded-2xl bg-white/8 px-4 py-2.5">
-                <span className="text-sm text-emerald-50/85">Profile</span>
-                <span className="text-sm font-semibold text-white">{profileCompletionRate}%</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
-            <p className="text-xs uppercase tracking-[0.24em] text-emerald-50/65">
-              Talent profile
-            </p>
-            <div className="mt-4 space-y-3">
-              <div className="rounded-2xl bg-white/8 px-4 py-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
-                  Department
-                </p>
-                <p className="mt-2 truncate text-sm font-semibold text-white">
-                  {user?.department || "Not set"}
-                </p>
-              </div>
-              <div className="rounded-2xl bg-white/8 px-4 py-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
-                  Designation
-                </p>
-                <p className="mt-2 truncate text-sm font-semibold text-white">
-                  {user?.designation || "Not set"}
-                </p>
-              </div>
-              <div className="rounded-2xl bg-white/8 px-4 py-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
-                  Skills
-                </p>
-                {skillPreview.length > 0 ? (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {skillPreview.map((skill) => (
-                      <span
-                        key={skill}
-                        className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-medium text-white"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-2 text-sm font-semibold text-white">Not set</p>
-                )}
-              </div>
-              <div className="rounded-2xl bg-white/8 px-4 py-3">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-emerald-50/65">
-                  Joined
-                </p>
-                <p className="mt-2 text-sm font-semibold text-white">
-                  {formatProfileDate(user?.joinedDate)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-3">
-            <Link
-              href="/profile"
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-white/6 px-5 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-            >
-              Profile
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-emerald-50"
-            >
-              Logout
-            </button>
-          </div>
-        </aside>
+        <DashboardSidebar
+          user={user}
+          isAdmin={isAdmin}
+          tasksCount={tasks.length}
+          completedCount={completedCount}
+          activeCount={pendingCount + inProgressCount}
+          profileCompletionRate={profileCompletionRate}
+          skillPreview={skillPreview}
+          joinedDateLabel={formatProfileDate(user?.joinedDate)}
+          onLogout={handleLogout}
+        />
 
         <div className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-[var(--surface-strong)] p-6 shadow-[0_24px_90px_rgba(15,23,42,0.12)] sm:p-8 lg:p-9">
           {error ? (
@@ -872,44 +756,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                      Recent activity
-                    </p>
-                    <h3 className="mt-2 text-2xl font-semibold text-slate-900">Recent tasks</h3>
-                  </div>
-                  <span className="inline-flex rounded-full bg-stone-200 px-4 py-2 text-sm font-medium text-slate-700">
-                    {recentTasks.length} shown
-                  </span>
-                </div>
-
-                <div className="mt-5 grid gap-3 md:grid-cols-3">
-                  {recentTasks.length === 0 ? (
-                    <div className="md:col-span-3 rounded-[1.25rem] border border-dashed border-[var(--border)] bg-white px-5 py-6 text-sm text-[var(--muted)]">
-                      No recent tasks yet.
-                    </div>
-                  ) : (
-                    recentTasks.map((task) => (
-                      <div
-                        key={task._id}
-                        className="rounded-[1.25rem] border border-[var(--border)] bg-white p-4"
-                      >
-                        <p className="font-semibold text-slate-900">{task.title}</p>
-                        <p className="mt-2 text-sm capitalize text-slate-600">
-                          {task.status.replace("-", " ")}
-                        </p>
-                        {isAdmin && getTaskOwnerName(task) ? (
-                          <p className="mt-2 text-sm text-slate-500">
-                            Owner: {getTaskOwnerName(task)}
-                          </p>
-                        ) : null}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
+              <RecentTasksPanel tasks={recentTaskCards} showOwners={isAdmin} />
 
               <div className="rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface)] p-6">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
