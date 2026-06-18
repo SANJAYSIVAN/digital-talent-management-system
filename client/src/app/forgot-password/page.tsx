@@ -92,7 +92,7 @@ export default function ForgotPasswordPage() {
               </Link>
             ) : (
               <p className="text-emerald-700/90">
-                Password reset email delivery is not configured yet in this live version.
+                Check your inbox for the reset link. It will expire shortly for your security.
               </p>
             )}
           </div>

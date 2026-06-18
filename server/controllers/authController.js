@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { sendEmail } = require("../utils/sendEmail");
 
 const generateToken = (userId) =>
   jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -134,12 +135,33 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordExpires = new Date(Date.now() + 1000 * 60 * 15);
     await user.save();
 
+    const resetUrl = `${getFrontendUrl()}/reset-password?token=${rawToken}`;
+    const emailSent = await sendEmail({
+      to: user.email,
+      subject: "Reset your Digital Talent Management System password",
+      text: `Use this link to reset your password. This link expires in 15 minutes: ${resetUrl}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #0f172a;">
+          <h2>Password reset request</h2>
+          <p>Use the button below to reset your password. This link expires in 15 minutes.</p>
+          <p>
+            <a href="${resetUrl}" style="display:inline-block;padding:12px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:999px;font-weight:600;">
+              Reset password
+            </a>
+          </p>
+          <p>If you did not request this, you can ignore this email.</p>
+        </div>
+      `,
+    });
+
     const responsePayload = {
-      message: "Password reset link generated successfully.",
+      message: emailSent
+        ? "Password reset link has been sent to your email."
+        : "Password reset link generated successfully.",
     };
 
     if (shouldExposeResetUrl()) {
-      responsePayload.resetUrl = `${getFrontendUrl()}/reset-password?token=${rawToken}`;
+      responsePayload.resetUrl = resetUrl;
     }
 
     return res.status(200).json(responsePayload);
